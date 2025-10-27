@@ -58,14 +58,14 @@
   },
   "assegnazioni": {
     "1": "Centro",
-    "2": "Centro",
+    "2": "Isole",
     "3": "Nord_Ovest",
     "4": "Sud",
-    "5": "Sud",
-    "6": "Sud",
-    "7": "Nord_Est",
-    "8": "Isole",
-    "9": "Centro",
-    "10": "Sud"
+    "5": "Nord_Ovest",
+    "6": "Nord_Ovest",
+    "7": "Sud",
+    "8": "Nord_Ovest",
+    "9": "Sud",
+    "10": "Isole"
   }
 }

@@ -1,0 +1,15 @@
+# Registro Scolastico Intelligente
+# Python 3.8+
+
+# Core - No external dependencies required
+# The project uses only Python standard library
+
+# Optional for future expansions
+# flask==3.0.0
+# django==4.2.0
+# matplotlib==3.8.0
+# plotly==5.18.0
+# pandas==2.1.0
+# numpy==1.26.0
+# pytest==7.4.0
+
