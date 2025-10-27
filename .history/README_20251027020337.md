@@ -1,0 +1,399 @@
+# 🏫 Registro Scolastico Intelligente
+
+Sistema completo di gestione scolastica in Python con analisi didattica e sociale avanzate, macro-dati territoriali e controllo accessi.
+
+---
+
+## 📋 Descrizione
+
+Questo progetto implementa un **sistema scolastico completo e intelligente** che gestisce:
+
+- ✨ **Anagrafica studenti** con dati sociali, economici e territoriali
+- 👨‍🏫 **Gestione insegnanti** con materie e orari
+- 📝 **Sistema voti e pagelle**
+- 📊 **Analisi didattica avanzata** con indicatori sintetici
+- 🎯 **Calcolo fragilità sociale e resilienza educativa**
+- 🔍 **Analisi equità educativa e correlazioni reddito-rendimento**
+- 🌍 **Macro-dati territoriali** (ISTAT/MIUR/Eurostat)
+- 🔐 **Sistema di accesso** con ruoli e permessi
+- 📄 **Generazione report** aggregati e analisi complete
+- 🖥️ **Interfaccia avanzata** con menu interattivi
+
+---
+
+## 🚀 Quick Start
+
+### Requisiti
+- Python 3.8+
+
+### Installazione
+```bash
+# Clone il repository
+git clone <url>
+cd managers
+
+# Avvia il programma
+python main.py
+```
+
+### Primo utilizzo
+1. Avvia il programma con `python main.py`
+2. Seleziona **opzione 6** per la "Simulazione Completa"
+3. Genera studenti e insegnanti (consigliati: 50 studenti, 10 insegnanti)
+4. Esplora le funzionalità dal menu principale!
+
+### Esempi avanzati
+```bash
+# Test macro-dati territoriali
+python esempio_macro_dati.py
+
+# Esempi moduli avanzati
+python esempio_uso_avanzato.py
+```
+
+---
+
+## 📁 Struttura del Progetto
+
+```
+managers/
+├── main.py                    # Punto di ingresso con menu interattivo
+├── anagrafica.py              # Gestione studenti e dati sociali
+├── insegnanti.py              # Gestione professori e materie
+├── voti.py                    # Sistema voti e pagelle
+├── orari.py                   # Gestione orari settimanali
+├── analisi.py                 # Analisi didattica, etica e sociale
+├── indicatori.py              # ✨ NUOVO: Calcolo indici sintetici
+├── accesso.py                 # ✨ NUOVO: Sistema accesso e ruoli
+├── report.py                  # ✨ NUOVO: Generazione report
+├── interfaccia.py             # ✨ NUOVO: Interfaccia avanzata
+├── macro_dati.py              # ✨ NUOVO: Macro-dati territoriali
+├── esempio_macro_dati.py      # Esempi macro-dati
+├── esempio_uso_avanzato.py    # Esempi moduli avanzati
+├── dati.py                    # Generazione dati casuali realistici
+├── utils.py                   # Funzioni di utilità
+└── README.md                  # Questo file
+```
+
+---
+
+## 🎯 Funzionalità Principali
+
+### 1️⃣ Gestione Studenti
+- ✅ Visualizzazione anagrafica completa
+- ✅ Indicatore di fragilità sociale
+- ✅ Filtri per classe, fragilità, reddito
+- ✅ Statistiche demografiche
+- ✅ **Collegamento macro-dati territoriali**
+
+### 2️⃣ Gestione Insegnanti
+- ✅ Anagrafica docenti con materie
+- ✅ Calcolo ore settimanali
+- ✅ Classificazione carico di lavoro
+- ✅ Statistiche esperienza
+
+### 3️⃣ Sistema Voti
+- ✅ Registrazione voti per materia
+- ✅ Calcolo medie automatiche
+- ✅ Generazione pagelle
+- ✅ Statistiche rendimento
+
+### 4️⃣ Analisi Avanzate
+- ✅ **Graduatorie studenti** (per rendimento)
+- ✅ **Graduatorie insegnanti** (per efficacia)
+- ✅ **Impatto didattico su studenti fragili**
+- ✅ **Correlazione reddito-rendimento**
+- ✅ **Identificazione classe migliore**
+- ✅ **Analisi etiche e sociali**
+- ✅ **Report fragilità e resilienza**
+- ✅ **Calcolo indici sintetici studente**
+
+### 5️⃣ **Indicatori Sintetici** (NUOVO)
+- ✅ Indice Qualità Scolastica (0-100)
+- ✅ Indice Equità Educativa (0-100)
+- ✅ Indice Efficacia Didattica (0-100)
+- ✅ Indice Coesione Sociale (0-100)
+- ✅ Indice Benessere Scolastico (0-100)
+- ✅ Quadro indicatori completo con raccomandazioni
+
+### 6️⃣ **Macro-Dati Territoriali** (NUOVO)
+- ✅ 5 zone territoriali (Nord-Ovest, Nord-Est, Centro, Sud, Isole)
+- ✅ Dati basati su ISTAT/MIUR/Eurostat
+- ✅ Calcolo fragilità territoriale
+- ✅ Impatto reddito territoriale sui voti
+- ✅ Report comparativo zone
+- ✅ Salvataggio/caricamento JSON
+
+### 7️⃣ **Sistema di Accesso** (NUOVO)
+- ✅ Ruoli: Pubblico, Studente, Insegnante, Dirigente, Amministratore
+- ✅ Gestione permessi basata su ruoli
+- ✅ Viste pubbliche e private
+- ✅ Registrazione e autenticazione utenti
+- ✅ Statistiche accessi
+
+### 8️⃣ **Report Aggregati** (NUOVO)
+- ✅ Report annuale completo
+- ✅ Report per classe
+- ✅ Report per insegnante
+- ✅ Report equità educativa
+- ✅ Report performance
+- ✅ Report sintetico testuale
+- ✅ Esportazione JSON
+
+### 9️⃣ **Interfaccia Avanzata** (NUOVO)
+- ✅ Menu indicatori sintetici
+- ✅ Menu report e analisi
+- ✅ Menu sistema di accesso
+- ✅ Esportazione dati
+
+### 🎲 Simulazione Dati
+- 🎲 Generazione automatica studenti
+- 🎲 Generazione automatica insegnanti
+- 🎲 Assegnazione voti casuali realistici
+- 🎲 Distribuzione fragilità sociale
+- 🎲 Assegnazione automatica zone territoriali
+
+---
+
+## 🔧 Architettura
+
+### Moduli Core
+
+#### `anagrafica.py`
+Gestisce l'anagrafica degli studenti con:
+- Dati personali (nome, età, classe)
+- **Fragilità sociale** (0-100) basata su reddito, salute, famiglia
+
+#### `insegnanti.py`
+Gestisce il corpo docente con materie, ore settimanali, esperienza
+
+#### `voti.py`
+Sistema completo di valutazione con voti, medie e pagelle
+
+#### `analisi.py`
+Motore di analisi didattica, etica e sociale con:
+- Graduatorie intelligenti
+- Analisi fragilità e resilienza
+- Report equità educativa
+- Calcolo indici sintetici studente
+
+#### `indicatori.py` ⭐ NUOVO
+Calcola 5 indici sintetici compositi:
+- Indice Qualità Scolastica
+- Indice Equità Educativa
+- Indice Efficacia Didattica
+- Indice Coesione Sociale
+- Indice Benessere Scolastico
+
+#### `accesso.py` ⭐ NUOVO
+Sistema di controllo accessi con:
+- 5 ruoli con permessi specifici
+- Gestione utenti e autenticazione
+- Viste pubbliche e private
+- Statistiche accessi
+
+#### `report.py` ⭐ NUOVO
+Generatore di report completi:
+- Report annuali, per classe, per insegnante
+- Report equità e performance
+- Esportazione JSON
+
+#### `interfaccia.py` ⭐ NUOVO
+Interfaccia utente avanzata con menu dedicati per indicatori, report e accesso
+
+#### `macro_dati.py` ⭐ NUOVO
+Gestione macro-dati territoriali:
+- 5 zone con dati ISTAT/MIUR reali
+- Calcolo fragilità territoriale
+- Impatto territoriale sui voti
+- Report comparativo
+
+---
+
+## 💡 Esempi di Uso
+
+### Esempio 1: Graduatoria Studenti
+```python
+# Nel menu: 5 > 1
+# Ottiene i top 10 studenti per media
+```
+
+### Esempio 2: Analisi Fragilità
+```python
+# Nel menu: 5 > 3
+# Mostra come studenti fragili performano vs. altri
+```
+
+### Esempio 3: Macro-Dati Territoriali
+```python
+python esempio_macro_dati.py
+# Mostra assegnazione studenti a zone, fragilità territoriale, impatto voti
+```
+
+### Esempio 4: Indicatori Sintetici
+```python
+# Nel menu: 6 > 7
+# Mostra sintesi completa con valutazione e raccomandazioni
+```
+
+### Esempio 5: Report Equità
+```python
+# Nel menu: 7 > 4
+# Genera report completo su equità educativa
+```
+
+---
+
+## 📊 Indicatori Chiave
+
+### Fragilità Sociale (0-100)
+Calcolata considerando:
+- **Reddito** (0-40 punti): più è basso, più è alta la fragilità
+- **Salute** (0-30 punti): condizioni di salute
+- **Famiglia** (0-30 punti): situazione familiare
+
+### Efficacia Insegnanti (0-100)
+Formula:
+- **Media voti** (50%): performance studenti
+- **Esperienza** (30%): anni di servizio
+- **Carico di lavoro** (20%): equilibrio ore/insegnamento
+
+### Gap Pedagogico
+Differenza tra medie:
+- Studenti fragili vs. non fragili
+- > 1.0: Equità da migliorare
+- ≤ 1.0: Equità buona
+
+### **Fragilità Territoriale (0-100)** ⭐ NUOVO
+Calcolata per zona geografica:
+- **Nord-Ovest**: 25.12/100 (minore fragilità)
+- **Sud**: 58.71/100 (maggiore fragilità)
+- **Isole**: 65.0/100 (massima fragilità)
+
+### **Indici Sintetici (0-100)** ⭐ NUOVO
+5 indicatori compositi:
+- Indice Qualità Scolastica
+- Indice Equità Educativa
+- Indice Efficacia Didattica
+- Indice Coesione Sociale
+- Indice Benessere Scolastico
+
+---
+
+## 🎓 Obiettivi Didattici
+
+Questo progetto è pensato per:
+
+1. **Apprendere Python** in modo pratico
+2. **Modellare sistemi reali** (scuola + territorio)
+3. **Analisi dati** con statistiche avanzate
+4. **Programmazione orientata agli oggetti**
+5. **Sviluppo modulare** e organizzato
+6. **Macro-dati e Open Data** (ISTAT/MIUR)
+7. **Etica e equità** nella data analysis
+8. **Access control** e security
+9. **Report generation** professionale
+
+---
+
+## 🛠️ Espansioni Future
+
+Idee per migliorare il sistema:
+
+- [ ] Interfaccia web (Flask/Django)
+- [ ] Database persistente (SQLite/PostgreSQL)
+- [ ] Export dati (Excel/CSV)
+- [ ] Grafici e visualizzazioni (matplotlib/plotly)
+- [ ] Machine Learning per predizioni
+- [ ] API REST per integrazione
+- [ ] Scheduler per orari automatici
+- [ ] Report PDF professionali
+- [ ] **Interviste a studenti e insegnanti** (analisi qualitativa)
+- [ ] **Simulazione interventi** (crescita grazie a risorse)
+- [ ] **Stima grado istruzione raggiungibile** (media, superiori, laurea)
+
+---
+
+## 📊 Macro-Dati Territoriali
+
+Il sistema include **dati reali** basati su:
+- **ISTAT** (Istituto Nazionale di Statistica)
+- **MIUR** (Ministero Istruzione)
+- **Eurostat** (Statistiche Europee)
+
+### Zone Disponibili
+1. **Nord-Ovest**: ISU 0.88, reddito medio 45.000€
+2. **Nord-Est**: ISU 0.87, reddito medio 42.000€
+3. **Centro**: ISU 0.82, reddito medio 38.000€
+4. **Sud**: ISU 0.72, reddito medio 28.000€
+5. **Isole**: ISU 0.70, reddito medio 26.000€
+
+### Impatto sui Voti
+- **Nord-Ovest**: +0.50 voti
+- **Sud**: -0.35 voti
+- **Isole**: -0.45 voti
+
+---
+
+## 🔐 Sistema di Accesso
+
+Il sistema implementa **controllo accessi basato su ruoli (RBAC)**:
+
+### Ruoli Disponibili
+1. **Pubblico**: Solo statistiche generali
+2. **Studente**: Dati propri
+3. **Insegnante**: Gestione voti, studenti classe
+4. **Dirigente**: Report completi, gestione
+5. **Amministratore**: Accesso completo
+
+### Permessi
+Ogni ruolo ha permessi specifici per garantire privacy e sicurezza.
+
+---
+
+## 📝 Note
+
+- I dati sono generati casualmente e realistici
+- Il sistema è modulare e estendibile
+- Performance ottimizzate per dataset medi (centinaia di studenti)
+- Codice commentato in italiano per chiarezza
+- Macro-dati basati su statistiche reali ISTAT/MIUR
+
+---
+
+## 👤 Autore
+
+Creato come progetto educativo per:
+- Studio approfondito di Python
+- Modellazione sistemi complessi
+- Analisi dati didattici e sociali
+- Sviluppo software modulare
+- Uso di macro-dati e Open Data
+- Etica nella data analysis
+
+---
+
+## 📄 Licenza
+
+Progetto educativo - Libero per studio e modifica
+
+---
+
+## 🙏 Ringraziamenti
+
+Grazie per l'interesse nel Registro Scolastico Intelligente!
+
+**Buon coding! 🚀**
+
+---
+
+*Versione 2.0 - Novembre 2024*
+
+### **Nuove funzionalità in questa release:**
+- ✨ Sistema di accesso con ruoli e permessi
+- ✨ Indicatori sintetici (5 indici compositi)
+- ✨ Report aggregati professionali
+- ✨ Interfaccia utente avanzata
+- ✨ Macro-dati territoriali (ISTAT/MIUR)
+- ✨ Analisi etiche e sociali espandate
+- ✨ Calcolo fragilità e resilienza

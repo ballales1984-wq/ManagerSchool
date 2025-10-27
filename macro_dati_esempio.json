@@ -1,0 +1,71 @@
+{
+  "zone": {
+    "Nord_Ovest": {
+      "nome": "Nord Ovest",
+      "regione": "Lombardia",
+      "reddito_medio_familiare": 45000,
+      "percentuale_monogenitoriali": 18,
+      "tasso_abbandono_scolastico": 12,
+      "livello_istruzione_medio": 11.5,
+      "accesso_servizi_educativi": 0.85,
+      "accesso_servizi_sanitari": 0.9,
+      "indice_sviluppo_umano": 0.88
+    },
+    "Nord_Est": {
+      "nome": "Nord Est",
+      "regione": "Veneto",
+      "reddito_medio_familiare": 42000,
+      "percentuale_monogenitoriali": 17,
+      "tasso_abbandono_scolastico": 11,
+      "livello_istruzione_medio": 11.2,
+      "accesso_servizi_educativi": 0.83,
+      "accesso_servizi_sanitari": 0.89,
+      "indice_sviluppo_umano": 0.87
+    },
+    "Centro": {
+      "nome": "Centro",
+      "regione": "Lazio",
+      "reddito_medio_familiare": 38000,
+      "percentuale_monogenitoriali": 22,
+      "tasso_abbandono_scolastico": 15,
+      "livello_istruzione_medio": 10.8,
+      "accesso_servizi_educativi": 0.75,
+      "accesso_servizi_sanitari": 0.82,
+      "indice_sviluppo_umano": 0.82
+    },
+    "Sud": {
+      "nome": "Sud",
+      "regione": "Campania",
+      "reddito_medio_familiare": 28000,
+      "percentuale_monogenitoriali": 28,
+      "tasso_abbandono_scolastico": 25,
+      "livello_istruzione_medio": 9.5,
+      "accesso_servizi_educativi": 0.65,
+      "accesso_servizi_sanitari": 0.72,
+      "indice_sviluppo_umano": 0.72
+    },
+    "Isole": {
+      "nome": "Isole",
+      "regione": "Sicilia",
+      "reddito_medio_familiare": 26000,
+      "percentuale_monogenitoriali": 30,
+      "tasso_abbandono_scolastico": 28,
+      "livello_istruzione_medio": 9.2,
+      "accesso_servizi_educativi": 0.6,
+      "accesso_servizi_sanitari": 0.68,
+      "indice_sviluppo_umano": 0.7
+    }
+  },
+  "assegnazioni": {
+    "1": "Centro",
+    "2": "Centro",
+    "3": "Nord_Ovest",
+    "4": "Sud",
+    "5": "Sud",
+    "6": "Sud",
+    "7": "Nord_Est",
+    "8": "Isole",
+    "9": "Centro",
+    "10": "Sud"
+  }
+}
