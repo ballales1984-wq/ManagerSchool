@@ -1,7 +1,7 @@
 # 🏫 Registro Scolastico Intelligente
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
-![License](https://img.shields.io/badge/License-MIT-green)
+![License](https://img.shields.io/badge/License-Apache%202.0-blue)
 ![Status](https://img.shields.io/badge/Version-2.0-success)
 ![Tests](https://img.shields.io/badge/Tests-21%20passed-brightgreen)
 
