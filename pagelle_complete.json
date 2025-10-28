@@ -1,0 +1,422 @@
+[
+  {
+    "studente": {
+      "id": 1,
+      "nome": "Martina Ferrari",
+      "classe": "1A",
+      "eta": 18
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.279999999999999,
+      "Matematica": 7.05,
+      "Storia": 5.8,
+      "Italiano": 6.816666666666666,
+      "Inglese": 6.5,
+      "Religione": 7.05
+    },
+    "media_generale": 6.75,
+    "voto_condotta": 8.6,
+    "assenze": 1,
+    "note": "Necessita di maggiore impegno in alcune materie"
+  },
+  {
+    "studente": {
+      "id": 2,
+      "nome": "Elisa Caruso",
+      "classe": "5E",
+      "eta": 14
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.76,
+      "Matematica": 5.966666666666666,
+      "Storia": 5.975,
+      "Italiano": 6.45,
+      "Inglese": 6.05,
+      "Religione": 6.4
+    },
+    "media_generale": 6.27,
+    "voto_condotta": 7.8,
+    "assenze": 7,
+    "note": "Ottimo comportamento e rendimento costante"
+  },
+  {
+    "studente": {
+      "id": 3,
+      "nome": "Nicolas Moretti",
+      "classe": "4E",
+      "eta": 15
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.033333333333334,
+      "Matematica": 5.8999999999999995,
+      "Storia": 6.5,
+      "Italiano": 6.4,
+      "Inglese": 6.266666666666667,
+      "Religione": 6.5
+    },
+    "media_generale": 6.43,
+    "voto_condotta": 8.3,
+    "assenze": 8,
+    "note": "Richiede supporto in alcune discipline"
+  },
+  {
+    "studente": {
+      "id": 4,
+      "nome": "Elisa Bruno",
+      "classe": "5B",
+      "eta": 16
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.725,
+      "Matematica": 6.2,
+      "Storia": 5.766666666666667,
+      "Italiano": 6.300000000000001,
+      "Inglese": 6.166666666666667,
+      "Religione": 6.766666666666667
+    },
+    "media_generale": 6.32,
+    "voto_condotta": 7.9,
+    "assenze": 12,
+    "note": "Necessita di maggiore impegno in alcune materie"
+  },
+  {
+    "studente": {
+      "id": 5,
+      "nome": "Aurora Gallo",
+      "classe": "5B",
+      "eta": 19
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.725,
+      "Matematica": 6.1000000000000005,
+      "Storia": 5.866666666666667,
+      "Italiano": 6.42,
+      "Inglese": 6.0200000000000005,
+      "Religione": 6.633333333333333
+    },
+    "media_generale": 6.29,
+    "voto_condotta": 8.3,
+    "assenze": 13,
+    "note": "Partecipazione attiva alle lezioni"
+  },
+  {
+    "studente": {
+      "id": 6,
+      "nome": "Giorgia Greco",
+      "classe": "4C",
+      "eta": 17
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.966666666666666,
+      "Matematica": 6.199999999999999,
+      "Storia": 6.55,
+      "Italiano": 6.283333333333334,
+      "Inglese": 6.3,
+      "Religione": 7.0
+    },
+    "media_generale": 6.55,
+    "voto_condotta": 8.3,
+    "assenze": 2,
+    "note": "Buon impegno e risultati positivi"
+  },
+  {
+    "studente": {
+      "id": 7,
+      "nome": "Luca Ricci",
+      "classe": "4B",
+      "eta": 14
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.1000000000000005,
+      "Matematica": 6.35,
+      "Storia": 6.866666666666667,
+      "Italiano": 6.959999999999999,
+      "Inglese": 6.5,
+      "Religione": 6.5
+    },
+    "media_generale": 6.71,
+    "voto_condotta": 8.7,
+    "assenze": 6,
+    "note": "Eccellente rendimento generale"
+  },
+  {
+    "studente": {
+      "id": 8,
+      "nome": "Martina Mancini",
+      "classe": "1D",
+      "eta": 18
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.949999999999999,
+      "Matematica": 6.800000000000001,
+      "Storia": 6.3,
+      "Italiano": 6.4799999999999995,
+      "Inglese": 6.15,
+      "Religione": 6.949999999999999
+    },
+    "media_generale": 6.6,
+    "voto_condotta": 8.9,
+    "assenze": 2,
+    "note": "Partecipazione attiva alle lezioni"
+  },
+  {
+    "studente": {
+      "id": 9,
+      "nome": "Luca Ricci",
+      "classe": "5C",
+      "eta": 19
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.62,
+      "Matematica": 5.9,
+      "Storia": 5.95,
+      "Italiano": 6.75,
+      "Inglese": 6.25,
+      "Religione": 6.8999999999999995
+    },
+    "media_generale": 6.39,
+    "voto_condotta": 8.4,
+    "assenze": 9,
+    "note": "Partecipazione attiva alle lezioni"
+  },
+  {
+    "studente": {
+      "id": 10,
+      "nome": "Riccardo Longo",
+      "classe": "4E",
+      "eta": 15
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.0,
+      "Matematica": 7.066666666666667,
+      "Storia": 6.540000000000001,
+      "Italiano": 6.7,
+      "Inglese": 6.116666666666667,
+      "Religione": 7.075
+    },
+    "media_generale": 6.75,
+    "voto_condotta": 9.0,
+    "assenze": 1,
+    "note": "Partecipazione attiva alle lezioni"
+  },
+  {
+    "studente": {
+      "id": 11,
+      "nome": "Andrea Lombardi",
+      "classe": "2A",
+      "eta": 16
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.08,
+      "Matematica": 6.2,
+      "Storia": 6.62,
+      "Italiano": 6.7250000000000005,
+      "Inglese": 5.7,
+      "Religione": 7.033333333333334
+    },
+    "media_generale": 6.56,
+    "voto_condotta": 8.8,
+    "assenze": 2,
+    "note": "Eccellente rendimento generale"
+  },
+  {
+    "studente": {
+      "id": 12,
+      "nome": "Chiara Rinaldi",
+      "classe": "1E",
+      "eta": 16
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.116666666666667,
+      "Matematica": 6.45,
+      "Storia": 6.42,
+      "Italiano": 6.3,
+      "Inglese": 6.116666666666667,
+      "Religione": 6.9
+    },
+    "media_generale": 6.55,
+    "voto_condotta": 8.5,
+    "assenze": 8,
+    "note": "Partecipazione attiva alle lezioni"
+  },
+  {
+    "studente": {
+      "id": 13,
+      "nome": "Ginevra Greco",
+      "classe": "5A",
+      "eta": 14
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.9,
+      "Matematica": 6.666666666666667,
+      "Storia": 7.0,
+      "Italiano": 6.55,
+      "Inglese": 6.6000000000000005,
+      "Religione": 7.1000000000000005
+    },
+    "media_generale": 6.8,
+    "voto_condotta": 8.8,
+    "assenze": 5,
+    "note": "Buon impegno e risultati positivi"
+  },
+  {
+    "studente": {
+      "id": 14,
+      "nome": "Aurora Martelli",
+      "classe": "5B",
+      "eta": 14
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.12,
+      "Matematica": 6.0,
+      "Storia": 6.18,
+      "Italiano": 6.32,
+      "Inglese": 6.666666666666667,
+      "Religione": 6.8
+    },
+    "media_generale": 6.51,
+    "voto_condotta": 8.4,
+    "assenze": 8,
+    "note": "Richiede supporto in alcune discipline"
+  },
+  {
+    "studente": {
+      "id": 15,
+      "nome": "Francesco Galli",
+      "classe": "3C",
+      "eta": 17
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.56,
+      "Matematica": 5.55,
+      "Storia": 6.55,
+      "Italiano": 6.0,
+      "Inglese": 5.883333333333333,
+      "Religione": 6.483333333333333
+    },
+    "media_generale": 6.17,
+    "voto_condotta": 7.7,
+    "assenze": 6,
+    "note": "Necessita di maggiore impegno in alcune materie"
+  },
+  {
+    "studente": {
+      "id": 16,
+      "nome": "Lorenzo Martelli",
+      "classe": "1E",
+      "eta": 14
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.025,
+      "Matematica": 5.95,
+      "Storia": 6.833333333333333,
+      "Italiano": 6.65,
+      "Inglese": 6.1,
+      "Religione": 6.8
+    },
+    "media_generale": 6.56,
+    "voto_condotta": 8.9,
+    "assenze": 2,
+    "note": "Partecipazione attiva alle lezioni"
+  },
+  {
+    "studente": {
+      "id": 17,
+      "nome": "Tommaso Caruso",
+      "classe": "2A",
+      "eta": 17
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.1,
+      "Matematica": 6.16,
+      "Storia": 6.125,
+      "Italiano": 6.466666666666666,
+      "Inglese": 6.05,
+      "Religione": 6.875
+    },
+    "media_generale": 6.46,
+    "voto_condotta": 8.3,
+    "assenze": 5,
+    "note": "Necessita di maggiore impegno in alcune materie"
+  },
+  {
+    "studente": {
+      "id": 18,
+      "nome": "Nicolas De Luca",
+      "classe": "2B",
+      "eta": 16
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.25,
+      "Matematica": 6.8,
+      "Storia": 6.4799999999999995,
+      "Italiano": 6.566666666666666,
+      "Inglese": 6.24,
+      "Religione": 7.1
+    },
+    "media_generale": 6.74,
+    "voto_condotta": 8.7,
+    "assenze": 7,
+    "note": "Necessita di maggiore impegno in alcune materie"
+  },
+  {
+    "studente": {
+      "id": 19,
+      "nome": "Sofia Leone",
+      "classe": "4D",
+      "eta": 14
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 7.066666666666666,
+      "Matematica": 6.6499999999999995,
+      "Storia": 7.0,
+      "Italiano": 6.4799999999999995,
+      "Inglese": 6.216666666666666,
+      "Religione": 6.7
+    },
+    "media_generale": 6.69,
+    "voto_condotta": 9.0,
+    "assenze": 10,
+    "note": "Necessita di maggiore impegno in alcune materie"
+  },
+  {
+    "studente": {
+      "id": 20,
+      "nome": "Marco Ricci",
+      "classe": "1C",
+      "eta": 14
+    },
+    "quadrimestre": 1,
+    "voti_materie": {
+      "Educazione Fisica": 6.9,
+      "Matematica": 6.3,
+      "Storia": 6.533333333333334,
+      "Italiano": 6.26,
+      "Inglese": 5.933333333333334,
+      "Religione": 7.300000000000001
+    },
+    "media_generale": 6.54,
+    "voto_condotta": 8.5,
+    "assenze": 4,
+    "note": "Necessita di maggiore impegno in alcune materie"
+  }
+]
