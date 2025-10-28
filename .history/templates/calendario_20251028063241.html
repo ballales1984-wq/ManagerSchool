@@ -1,0 +1,531 @@
+{% extends "base.html" %}
+
+{% block title %}Calendario Scolastico - Registro Scolastico ERP{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-calendar3"></i> Calendario Scolastico Italiano</h2>
+        <p class="text-muted">Anno scolastico, vacanze e festività secondo il calendario italiano</p>
+    </div>
+</div>
+
+<!-- Statistiche Anno Scolastico -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card info">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Anno Scolastico</h6>
+                <h3 id="annoScolastico">2024-2025</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card success">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Giorni di Scuola</h6>
+                <h3 id="giorniScuola">200</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card warning">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Giorni di Vacanza</h6>
+                <h3 id="giorniVacanza">65</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card danger">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Festività</h6>
+                <h3 id="totaleFestivita">12</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Periodo Corrente -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-clock"></i> Situazione Corrente</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Periodo Attuale</h6>
+                        <div id="periodoCorrente">
+                            <span class="badge bg-primary" id="nomePeriodo">Primo Quadrimestre</span>
+                            <p class="mt-2 mb-0">
+                                <small class="text-muted">
+                                    Dal <span id="inizioPeriodo">15 settembre 2024</span> 
+                                    al <span id="finePeriodo">31 gennaio 2025</span>
+                                </small>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Giorni Mancanti</h6>
+                        <div class="d-flex align-items-center">
+                            <div class="progress flex-grow-1 me-3" style="height: 10px;">
+                                <div class="progress-bar" role="progressbar" style="width: 60%" id="progressoPeriodo"></div>
+                            </div>
+                            <span class="fw-bold" id="giorniMancanti">45</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Prossimi Eventi -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-star"></i> Prossime Festività</h5>
+            </div>
+            <div class="card-body">
+                <div id="prossimeFestivita">
+                    <!-- Inserite dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-calendar-x"></i> Prossime Vacanze</h5>
+            </div>
+            <div class="card-body">
+                <div id="prossimeVacanze">
+                    <!-- Inserite dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendario Mensile -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-calendar3"></i> Calendario Mensile</h5>
+                <div>
+                    <select class="form-select form-select-sm d-inline-block w-auto me-2" id="selectMese">
+                        <option value="1">Gennaio</option>
+                        <option value="2">Febbraio</option>
+                        <option value="3">Marzo</option>
+                        <option value="4">Aprile</option>
+                        <option value="5">Maggio</option>
+                        <option value="6">Giugno</option>
+                        <option value="7">Luglio</option>
+                        <option value="8">Agosto</option>
+                        <option value="9">Settembre</option>
+                        <option value="10" selected>Ottobre</option>
+                        <option value="11">Novembre</option>
+                        <option value="12">Dicembre</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-primary" onclick="esportaCalendario()">
+                        <i class="bi bi-download"></i> Esporta
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Legenda -->
+                <div class="mb-3">
+                    <small class="text-muted">
+                        <span class="badge bg-success me-2">Scuola aperta</span>
+                        <span class="badge bg-danger me-2">Festività</span>
+                        <span class="badge bg-warning me-2">Vacanze</span>
+                        <span class="badge bg-secondary me-2">Weekend</span>
+                    </small>
+                </div>
+                
+                <!-- Calendario -->
+                <div class="table-responsive">
+                    <table class="table table-bordered calendario-table">
+                        <thead>
+                            <tr class="text-center">
+                                <th>Lun</th>
+                                <th>Mar</th>
+                                <th>Mer</th>
+                                <th>Gio</th>
+                                <th>Ven</th>
+                                <th>Sab</th>
+                                <th class="text-danger">Dom</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendarioBody">
+                            <!-- Inserito dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Eventi del mese -->
+                <div class="mt-4">
+                    <h6>Eventi del Mese</h6>
+                    <div id="eventiMese">
+                        <!-- Inseriti dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.calendario-table {
+    font-size: 0.9rem;
+}
+
+.calendario-table td {
+    height: 60px;
+    vertical-align: top;
+    position: relative;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.calendario-table td:hover {
+    background-color: #f8f9fa;
+}
+
+.giorno-numero {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.giorno-scuola {
+    background-color: #d4ffd4;
+}
+
+.giorno-festivita {
+    background-color: #ffd4d4;
+    color: #721c24;
+}
+
+.giorno-vacanza {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.giorno-weekend {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+
+.evento-badge {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    font-size: 0.7em;
+    max-width: calc(100% - 4px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stat-card.info { border-left: 4px solid #0dcaf0; }
+.stat-card.success { border-left: 4px solid #198754; }
+.stat-card.warning { border-left: 4px solid #ffc107; }
+.stat-card.danger { border-left: 4px solid #dc3545; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let calendarioData = {};
+let meseCorrente = new Date().getMonth() + 1;
+let annoCorrente = new Date().getFullYear();
+
+// Dati simulati del calendario (in un sistema reale verrebbero da API)
+const calendarioSimulato = {
+    annoScolastico: "2024-2025",
+    statistiche: {
+        giorni_scuola: 200,
+        giorni_vacanza: 65,
+        totale_festivita: 12
+    },
+    periodoCorrente: {
+        nome: "Primo Quadrimestre",
+        inizio: "2024-09-15",
+        fine: "2025-01-31",
+        giorniMancanti: 45
+    },
+    prossimeFestivita: [
+        { nome: "Ognissanti", data: "2024-11-01", tipo: "nazionale" },
+        { nome: "Immacolata", data: "2024-12-08", tipo: "religiosa" },
+        { nome: "Natale", data: "2024-12-25", tipo: "nazionale" }
+    ],
+    prossimeVacanze: [
+        { nome: "Vacanze di Natale", inizio: "2024-12-23", fine: "2025-01-06" },
+        { nome: "Vacanze di Pasqua", inizio: "2025-04-17", fine: "2025-04-22" }
+    ]
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    caricaStatistiche();
+    caricaPeriodoCorrente();
+    caricaProssimiEventi();
+    generaCalendarioMese(meseCorrente, annoCorrente);
+    
+    // Event listener per cambio mese
+    document.getElementById('selectMese').addEventListener('change', function() {
+        meseCorrente = parseInt(this.value);
+        generaCalendarioMese(meseCorrente, annoCorrente);
+    });
+});
+
+function caricaStatistiche() {
+    document.getElementById('annoScolastico').textContent = calendarioSimulato.annoScolastico;
+    document.getElementById('giorniScuola').textContent = calendarioSimulato.statistiche.giorni_scuola;
+    document.getElementById('giorniVacanza').textContent = calendarioSimulato.statistiche.giorni_vacanza;
+    document.getElementById('totaleFestivita').textContent = calendarioSimulato.statistiche.totale_festivita;
+}
+
+function caricaPeriodoCorrente() {
+    const periodo = calendarioSimulato.periodoCorrente;
+    document.getElementById('nomePeriodo').textContent = periodo.nome;
+    document.getElementById('inizioPeriodo').textContent = formatData(periodo.inizio);
+    document.getElementById('finePeriodo').textContent = formatData(periodo.fine);
+    document.getElementById('giorniMancanti').textContent = periodo.giorniMancanti;
+    
+    // Calcola progresso (simulato)
+    const progresso = Math.max(10, Math.min(90, 100 - (periodo.giorniMancanti / 150 * 100)));
+    document.getElementById('progressoPeriodo').style.width = progresso + '%';
+}
+
+function caricaProssimiEventi() {
+    // Prossime festività
+    const festivitaContainer = document.getElementById('prossimeFestivita');
+    festivitaContainer.innerHTML = '';
+    
+    calendarioSimulato.prossimeFestivita.forEach(fest => {
+        const div = document.createElement('div');
+        div.className = 'mb-2';
+        div.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>${fest.nome}</strong>
+                    <br><small class="text-muted">${formatData(fest.data)}</small>
+                </div>
+                <span class="badge bg-${getBadgeColor(fest.tipo)}">${fest.tipo}</span>
+            </div>
+        `;
+        festivitaContainer.appendChild(div);
+    });
+    
+    // Prossime vacanze
+    const vacanzeContainer = document.getElementById('prossimeVacanze');
+    vacanzeContainer.innerHTML = '';
+    
+    calendarioSimulato.prossimeVacanze.forEach(vac => {
+        const div = document.createElement('div');
+        div.className = 'mb-2';
+        div.innerHTML = `
+            <div>
+                <strong>${vac.nome}</strong>
+                <br><small class="text-muted">
+                    Dal ${formatData(vac.inizio)} al ${formatData(vac.fine)}
+                </small>
+            </div>
+        `;
+        vacanzeContainer.appendChild(div);
+    });
+}
+
+function generaCalendarioMese(mese, anno) {
+    const firstDay = new Date(anno, mese - 1, 1);
+    const lastDay = new Date(anno, mese, 0);
+    const startDay = firstDay.getDay() === 0 ? 7 : firstDay.getDay(); // 1=lunedì
+    
+    const tbody = document.getElementById('calendarioBody');
+    tbody.innerHTML = '';
+    
+    let day = 1;
+    let row = document.createElement('tr');
+    
+    // Giorni vuoti all'inizio
+    for (let i = 1; i < startDay; i++) {
+        const cell = document.createElement('td');
+        cell.className = 'text-muted';
+        row.appendChild(cell);
+    }
+    
+    // Giorni del mese
+    while (day <= lastDay.getDate()) {
+        if (row.children.length === 7) {
+            tbody.appendChild(row);
+            row = document.createElement('tr');
+        }
+        
+        const cell = document.createElement('td');
+        const currentDate = new Date(anno, mese - 1, day);
+        const dayOfWeek = currentDate.getDay();
+        
+        // Contenuto cella
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'giorno-numero';
+        dayDiv.textContent = day;
+        cell.appendChild(dayDiv);
+        
+        // Stile in base al tipo di giorno
+        if (dayOfWeek === 0) { // Domenica
+            cell.className = 'giorno-weekend';
+        } else if (isScuolaAperta(currentDate)) {
+            cell.className = 'giorno-scuola';
+        } else if (isFestivita(currentDate)) {
+            cell.className = 'giorno-festivita';
+            const badge = document.createElement('span');
+            badge.className = 'evento-badge badge bg-danger';
+            badge.textContent = 'Festività';
+            cell.appendChild(badge);
+        } else if (isVacanza(currentDate)) {
+            cell.className = 'giorno-vacanza';
+            const badge = document.createElement('span');
+            badge.className = 'evento-badge badge bg-warning';
+            badge.textContent = 'Vacanze';
+            cell.appendChild(badge);
+        }
+        
+        row.appendChild(cell);
+        day++;
+    }
+    
+    // Completa l'ultima settimana
+    while (row.children.length < 7) {
+        const cell = document.createElement('td');
+        cell.className = 'text-muted';
+        row.appendChild(cell);
+    }
+    tbody.appendChild(row);
+    
+    // Aggiorna eventi del mese
+    generaEventiMese(mese, anno);
+}
+
+function isScuolaAperta(data) {
+    // Logica semplificata per determinare se la scuola è aperta
+    const mese = data.getMonth() + 1;
+    const giorno = data.getDate();
+    const dayOfWeek = data.getDay();
+    
+    // Weekend
+    if (dayOfWeek === 0) return false; // Domenica
+    
+    // Vacanze estive (luglio-agosto)
+    if (mese === 7 || mese === 8) return false;
+    
+    // Vacanze di Natale
+    if (mese === 12 && giorno >= 23) return false;
+    if (mese === 1 && giorno <= 6) return false;
+    
+    return true;
+}
+
+function isFestivita(data) {
+    const mese = data.getMonth() + 1;
+    const giorno = data.getDate();
+    
+    // Festività principali
+    const festivita = [
+        {m: 11, g: 1}, // Ognissanti
+        {m: 12, g: 8}, // Immacolata
+        {m: 12, g: 25}, // Natale
+        {m: 12, g: 26}, // Santo Stefano
+        {m: 1, g: 1}, // Capodanno
+        {m: 1, g: 6}, // Epifania
+        {m: 4, g: 25}, // Liberazione
+        {m: 5, g: 1}, // Festa del Lavoro
+        {m: 6, g: 2} // Festa della Repubblica
+    ];
+    
+    return festivita.some(f => f.m === mese && f.g === giorno);
+}
+
+function isVacanza(data) {
+    const mese = data.getMonth() + 1;
+    const giorno = data.getDate();
+    
+    // Vacanze estive
+    if (mese === 7 || mese === 8) return true;
+    
+    // Vacanze di Natale
+    if (mese === 12 && giorno >= 23) return true;
+    if (mese === 1 && giorno <= 6) return true;
+    
+    return false;
+}
+
+function generaEventiMese(mese, anno) {
+    const container = document.getElementById('eventiMese');
+    container.innerHTML = '';
+    
+    // Filtra eventi per il mese corrente
+    const eventiMese = calendarioSimulato.prossimeFestivita.filter(fest => {
+        const data = new Date(fest.data);
+        return data.getMonth() + 1 === mese && data.getFullYear() === anno;
+    });
+    
+    if (eventiMese.length === 0) {
+        container.innerHTML = '<p class="text-muted">Nessun evento particolare questo mese.</p>';
+        return;
+    }
+    
+    eventiMese.forEach(evento => {
+        const div = document.createElement('div');
+        div.className = 'mb-2 p-2 border-start border-primary border-3';
+        div.innerHTML = `
+            <strong>${evento.nome}</strong> - ${formatData(evento.data)}
+            <br><small class="text-muted">${evento.tipo}</small>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function formatData(dataStr) {
+    const data = new Date(dataStr);
+    return data.toLocaleDateString('it-IT', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+}
+
+function getBadgeColor(tipo) {
+    switch(tipo) {
+        case 'nazionale': return 'primary';
+        case 'religiosa': return 'warning';
+        case 'locale': return 'info';
+        default: return 'secondary';
+    }
+}
+
+function esportaCalendario() {
+    // Simula esportazione calendario
+    const data = {
+        anno_scolastico: calendarioSimulato.annoScolastico,
+        mese: meseCorrente,
+        anno: annoCorrente,
+        eventi: calendarioSimulato.prossimeFestivita
+    };
+    
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `calendario_${meseCorrente}_${annoCorrente}.json`;
+    link.click();
+}
+</script>
+{% endblock %}

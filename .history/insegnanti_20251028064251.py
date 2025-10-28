@@ -3,9 +3,8 @@ Modulo per la gestione degli insegnanti.
 Gestisce professori, materie e ore settimanali.
 """
 
-from typing import List, Dict, Optional
-from dataclasses import dataclass
-import random
+from typing import List, Dict, Optional, Set
+from dataclasses import dataclass, field
 import dati
 
 
@@ -434,3 +433,6 @@ class GestioneInsegnanti:
         """Rappresentazione stringa."""
         return f"GestioneInsegnanti({len(self.insegnanti)} insegnanti)"
 
+
+# Import necessario per random
+import random

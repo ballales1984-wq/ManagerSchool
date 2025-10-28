@@ -3,9 +3,8 @@ Modulo per la gestione degli insegnanti.
 Gestisce professori, materie e ore settimanali.
 """
 
-from typing import List, Dict, Optional
-from dataclasses import dataclass
-import random
+from typing import List, Dict, Optional, Set
+from dataclasses import dataclass, field
 import dati
 
 
@@ -115,7 +114,6 @@ class Insegnante:
             "totale_ore": self.totale_ore_settimanali,
             "carico_lavoro": self.carico_lavoro,
             "anni_esperienza": self.anni_esperienza,
-            "sezioni_assegnate": self.sezioni_assegnate,
             "note": self.note
         }
 
@@ -182,101 +180,6 @@ class GestioneInsegnanti:
         for _ in range(numero):
             insegnante = self.crea_insegnante_casuale(numero_materie)
             insegnanti_creati.append(insegnante)
-        return insegnanti_creati
-    
-    def genera_insegnanti_per_materia(self) -> List[Insegnante]:
-        """Genera insegnanti specifici per materia con assegnazioni alle sezioni.
-        
-        Crea due squadre di insegnanti:
-        - Squadra 1: Sezioni A e B
-        - Squadra 2: Sezioni C e D
-        
-        Ogni squadra ha un insegnante per ciascuna materia.
-        
-        Returns:
-            Lista di 12 insegnanti creati (6 per squadra)
-        """
-        materie = ["Matematica", "Italiano", "Inglese", "Storia", "Educazione Fisica", "Religione"]
-        
-        # Nomi specifici per gli insegnanti
-        nomi_squadra_ab = [
-            ("Mario", "Rossi"),      # Matematica
-            ("Laura", "Bianchi"),    # Italiano  
-            ("James", "Wilson"),     # Inglese
-            ("Giuseppe", "Verdi"),   # Storia
-            ("Luca", "Sportivo"),    # Educazione Fisica
-            ("Maria", "Santini")     # Religione
-        ]
-        
-        nomi_squadra_cd = [
-            ("Anna", "Fibonacci"),   # Matematica
-            ("Paolo", "Manzoni"),    # Italiano
-            ("Emma", "Smith"),       # Inglese
-            ("Carlo", "Storici"),    # Storia
-            ("Marco", "Atletico"),   # Educazione Fisica
-            ("Sofia", "Benedetti")   # Religione
-        ]
-        
-        insegnanti_creati = []
-        
-        # Crea squadra A-B
-        for i, (nome, cognome) in enumerate(nomi_squadra_ab):
-            materia = materie[i]
-            
-            # Ore specifiche per materia
-            ore_materia = {
-                "Matematica": 5,
-                "Italiano": 5, 
-                "Inglese": 3,
-                "Storia": 3,
-                "Educazione Fisica": 2,
-                "Religione": 1
-            }
-            
-            insegnante = Insegnante(
-                id=0,  # Sarà assegnato automaticamente
-                nome=nome,
-                cognome=cognome,
-                eta=random.randint(28, 55),
-                materie=[materia],
-                ore_settimanali={materia: ore_materia[materia]},
-                anni_esperienza=random.randint(2, 25),
-                sezioni_assegnate=["A", "B"],
-                note=f"Responsabile {materia} - Sezioni A/B"
-            )
-            
-            self.aggiungi_insegnante(insegnante)
-            insegnanti_creati.append(insegnante)
-        
-        # Crea squadra C-D
-        for i, (nome, cognome) in enumerate(nomi_squadra_cd):
-            materia = materie[i]
-            
-            # Ore specifiche per materia
-            ore_materia = {
-                "Matematica": 5,
-                "Italiano": 5,
-                "Inglese": 3, 
-                "Storia": 3,
-                "Educazione Fisica": 2,
-                "Religione": 1
-            }
-            
-            insegnante = Insegnante(
-                id=0,  # Sarà assegnato automaticamente
-                nome=nome,
-                cognome=cognome,
-                eta=random.randint(28, 55),
-                materie=[materia],
-                ore_settimanali={materia: ore_materia[materia]},
-                anni_esperienza=random.randint(2, 25),
-                sezioni_assegnate=["C", "D"],
-                note=f"Responsabile {materia} - Sezioni C/D"
-            )
-            
-            self.aggiungi_insegnante(insegnante)
-            insegnanti_creati.append(insegnante)
-        
         return insegnanti_creati
     
     def trova_insegnante(self, id: int) -> Optional[Insegnante]:
@@ -434,3 +337,6 @@ class GestioneInsegnanti:
         """Rappresentazione stringa."""
         return f"GestioneInsegnanti({len(self.insegnanti)} insegnanti)"
 
+
+# Import necessario per random
+import random

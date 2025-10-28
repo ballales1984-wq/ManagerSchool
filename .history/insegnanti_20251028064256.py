@@ -5,7 +5,6 @@ Gestisce professori, materie e ore settimanali.
 
 from typing import List, Dict, Optional
 from dataclasses import dataclass
-import random
 import dati
 
 
@@ -434,3 +433,6 @@ class GestioneInsegnanti:
         """Rappresentazione stringa."""
         return f"GestioneInsegnanti({len(self.insegnanti)} insegnanti)"
 
+
+# Import necessario per random
+import random

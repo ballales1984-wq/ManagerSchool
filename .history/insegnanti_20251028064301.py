@@ -434,3 +434,6 @@ class GestioneInsegnanti:
         """Rappresentazione stringa."""
         return f"GestioneInsegnanti({len(self.insegnanti)} insegnanti)"
 
+
+# Import necessario per random
+import random

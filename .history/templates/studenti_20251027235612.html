@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Studenti - Registro Scolastico ERP{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-people"></i> Gestione Studenti</h2>
+        <p class="text-muted">Lista completa degli studenti</p>
+    </div>
+</div>
+
+<!-- Statistiche Studenti -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card primary">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Totale</h6>
+                <h2>{{ studenti|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card info">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Classi</h6>
+                <h2>
+                    {% set classi_unique = studenti|map(attribute='classe')|list|unique|list|length %}
+                    {{ classi_unique }}
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabella Studenti -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Lista Studenti</h5>
+                <button class="btn btn-primary btn-sm" onclick="exportStudenti()">
+                    <i class="bi bi-download"></i> Esporta JSON
+                </button>
+            </div>
+            <div class="card-body">
+                {% if studenti %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Cognome</th>
+                                <th>Classe</th>
+                                <th>Età</th>
+                                <th>Reddito</th>
+                                <th>Fragilità</th>
+                                <th>Salute</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stud in studenti %}
+                            <tr>
+                                <td><strong>{{ stud.id }}</strong></td>
+                                <td>{{ stud.nome }}</td>
+                                <td>{{ stud.cognome }}</td>
+                                <td><span class="badge bg-secondary">{{ stud.classe }}</span></td>
+                                <td>{{ stud.eta }}</td>
+                                <td>€{{ stud.reddito|round|int }}</td>
+                                <td>
+                                    {% if stud.fragilita >= 60 %}
+                                        <span class="badge bg-danger">{{ "%.1f"|format(stud.fragilita) }}</span>
+                                    {% elif stud.fragilita >= 30 %}
+                                        <span class="badge bg-warning">{{ "%.1f"|format(stud.fragilita) }}</span>
+                                    {% else %}
+                                        <span class="badge bg-success">{{ "%.1f"|format(stud.fragilita) }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ stud.salute }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> Nessuno studente registrato
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function exportStudenti() {
+    fetch('/api/studenti')
+        .then(res => res.json())
+        .then(data => {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'studenti.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+}
+</script>
+{% endblock %}
+

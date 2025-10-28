@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Insegnanti - Registro Scolastico ERP{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-person-badge"></i> Gestione Insegnanti</h2>
+        <p class="text-muted">Lista completa degli insegnanti</p>
+    </div>
+</div>
+
+<!-- Statistiche Insegnanti -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card info">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Totale</h6>
+                <h2>{{ insegnanti|length }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card success">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Ore Medie</h6>
+                <h2>
+                    {% if insegnanti %}
+                        {% set ore_totali = 0 %}
+                        {% for ins in insegnanti %}
+                            {% set ore_totali = ore_totali + ins.totale_ore_settimanali %}
+                        {% endfor %}
+                        {{ "%.1f"|format(ore_totali / insegnanti|length) }}
+                    {% else %}
+                        0
+                    {% endif %}
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabella Insegnanti -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Lista Insegnanti</h5>
+                <button class="btn btn-primary btn-sm" onclick="exportInsegnanti()">
+                    <i class="bi bi-download"></i> Esporta JSON
+                </button>
+            </div>
+            <div class="card-body">
+                {% if insegnanti %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Cognome</th>
+                                <th>Materie</th>
+                                <th>Ore Settimanali</th>
+                                <th>Esperienza</th>
+                                <th>Carico Lavoro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ins in insegnanti %}
+                            <tr>
+                                <td><strong>{{ ins.id }}</strong></td>
+                                <td>{{ ins.nome }}</td>
+                                <td>{{ ins.cognome }}</td>
+                                <td>
+                                    <span class="badge bg-primary">{{ ins.materie|join(', ') if ins.materie else 'N/A' }}</span>
+                                </td>
+                                <td><strong>{{ ins.totale_ore_settimanali }}</strong></td>
+                                <td>{{ ins.anni_esperienza }} anni</td>
+                                <td>
+                                    {% if ins.carico_lavoro == 'Normale' %}
+                                        <span class="badge bg-success">Normale</span>
+                                    {% elif ins.carico_lavoro == 'Elevato' %}
+                                        <span class="badge bg-warning">Elevato</span>
+                                    {% else %}
+                                        <span class="badge bg-info">{{ ins.carico_lavoro }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info text-center">
+                    <i class="bi bi-info-circle"></i> Nessun insegnante registrato
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function exportInsegnanti() {
+    fetch('/api/insegnanti')
+        .then(res => res.json())
+        .then(data => {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'insegnanti.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+}
+</script>
+{% endblock %}
+

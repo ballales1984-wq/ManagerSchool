@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Indicatori - Registro Scolastico ERP{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-bar-chart"></i> Indicatori Sintetici</h2>
+        <p class="text-muted">Indicatori compositi di qualità scolastica</p>
+    </div>
+</div>
+
+<!-- Indicatori -->
+{% if quadro %}
+<div class="row mb-4">
+    {% for key, indice in quadro.items() %}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5>{{ indice.nome }}</h5>
+                <h2 class="{% if indice.valore >= 75 %}text-success{% elif indice.valore >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ indice.valore|round(1) }}<small>/100</small>
+                </h2>
+                <div class="progress mt-3" style="height: 8px;">
+                    <div class="progress-bar {% if indice.valore >= 75 %}bg-success{% elif indice.valore >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                         role="progressbar" style="width: {{ indice.valore }}%">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Sintesi -->
+{% if sintesi %}
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-chat-text"></i> Sintesi e Raccomandazioni</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Valutazione Generale:</strong> <span class="badge bg-primary">{{ sintesi.valutazione }}</span></p>
+                <p><strong>Punteggio Medio:</strong> {{ sintesi.media_generale|round(1) }}/100</p>
+                
+                <hr>
+                
+                <h6>Raccomandazioni:</h6>
+                <ul>
+                    {% for racc in sintesi.raccomandazioni %}
+                    <li>{{ racc }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+

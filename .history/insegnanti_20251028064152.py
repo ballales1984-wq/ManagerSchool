@@ -3,9 +3,8 @@ Modulo per la gestione degli insegnanti.
 Gestisce professori, materie e ore settimanali.
 """
 
-from typing import List, Dict, Optional
-from dataclasses import dataclass
-import random
+from typing import List, Dict, Optional, Set
+from dataclasses import dataclass, field
 import dati
 
 
@@ -237,10 +236,10 @@ class GestioneInsegnanti:
                 id=0,  # Sarà assegnato automaticamente
                 nome=nome,
                 cognome=cognome,
-                eta=random.randint(28, 55),
+                eta=dati.eta_casuale(min_eta=28, max_eta=55),
                 materie=[materia],
                 ore_settimanali={materia: ore_materia[materia]},
-                anni_esperienza=random.randint(2, 25),
+                anni_esperienza=dati.anni_esperienza_casuali(),
                 sezioni_assegnate=["A", "B"],
                 note=f"Responsabile {materia} - Sezioni A/B"
             )
@@ -266,10 +265,10 @@ class GestioneInsegnanti:
                 id=0,  # Sarà assegnato automaticamente
                 nome=nome,
                 cognome=cognome,
-                eta=random.randint(28, 55),
+                eta=dati.eta_casuale(min_eta=28, max_eta=55),
                 materie=[materia],
                 ore_settimanali={materia: ore_materia[materia]},
-                anni_esperienza=random.randint(2, 25),
+                anni_esperienza=dati.anni_esperienza_casuali(),
                 sezioni_assegnate=["C", "D"],
                 note=f"Responsabile {materia} - Sezioni C/D"
             )
@@ -434,3 +433,6 @@ class GestioneInsegnanti:
         """Rappresentazione stringa."""
         return f"GestioneInsegnanti({len(self.insegnanti)} insegnanti)"
 
+
+# Import necessario per random
+import random

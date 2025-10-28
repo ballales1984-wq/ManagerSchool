@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block title %}Voti - Registro Scolastico ERP{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-clipboard-check"></i> Gestione Voti e Pagelle</h2>
+        <p class="text-muted">Visualizza voti e pagelle complete degli studenti</p>
+    </div>
+</div>
+
+<!-- Azioni rapide -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Azioni Rapide</h5>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-primary me-2" onclick="generaPagelleComplete()">
+                    <i class="bi bi-plus-circle"></i> Genera Pagelle Complete
+                </button>
+                <button class="btn btn-success me-2" onclick="mostraPagelle()">
+                    <i class="bi bi-file-earmark-text"></i> Mostra Pagelle
+                </button>
+                <button class="btn btn-info" onclick="esportaPagelle()">
+                    <i class="bi bi-download"></i> Esporta JSON
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Statistiche Voti -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card info">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Materie</h6>
+                <h2>6</h2>
+                <small>Complete per pagella</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-body">
+                <h6 class="text-muted mb-2">Materie Incluse nelle Pagelle</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-primary">Matematica</span>
+                    <span class="badge bg-success">Italiano</span>
+                    <span class="badge bg-warning">Inglese</span>
+                    <span class="badge bg-info">Storia</span>
+                    <span class="badge bg-secondary">Educazione Fisica</span>
+                    <span class="badge bg-dark">Religione</span>
+                    <span class="badge bg-danger">+ Voto Condotta</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Area Pagelle -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Pagelle Studenti</h5>
+                <div>
+                    <select class="form-select form-select-sm d-inline-block w-auto" id="filtroClasse">
+                        <option value="">Tutte le classi</option>
+                        <option value="1A">1A</option>
+                        <option value="2A">2A</option>
+                        <option value="3A">3A</option>
+                        <option value="4A">4A</option>
+                        <option value="5A">5A</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="pagelleContainer">
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle"></i> 
+                        Clicca su "Genera Pagelle Complete" per creare pagelle con tutte le materie richieste:
+                        <br><strong>Matematica, Italiano, Inglese, Storia, Educazione Fisica, Religione + Voto di Condotta</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Template Pagella -->
+<template id="pagellaTemplate">
+    <div class="pagella-card border rounded mb-3 p-3">
+        <div class="row">
+            <div class="col-md-4">
+                <h6 class="mb-1"><strong class="student-name"></strong></h6>
+                <p class="text-muted mb-2">
+                    <small>Classe: <span class="student-class"></span> | Età: <span class="student-age"></span> anni</small>
+                </p>
+                <div class="mb-2">
+                    <span class="badge bg-success">Media: <span class="media-generale"></span></span>
+                    <span class="badge bg-primary ms-1">Condotta: <span class="voto-condotta"></span></span>
+                </div>
+                <p class="text-muted small mb-0">
+                    Assenze: <span class="assenze"></span> | 
+                    <span class="note-pagella"></span>
+                </p>
+            </div>
+            <div class="col-md-8">
+                <div class="row g-2 voti-materie">
+                    <!-- Voti materie inseriti dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let pagelleData = [];
+
+async function generaPagelleComplete() {
+    try {
+        const btn = event.target;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Generando...';
+        
+        // Chiama API per generare pagelle reali
+        const response = await fetch('/api/pagelle/genera', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.successo) {
+            // Mostra statistiche di generazione
+            const stats = result.statistiche;
+            alert(`Pagelle generate con successo!\n\n` +
+                  `• Studenti: ${stats.studenti}\n` +
+                  `• Voti creati: ${stats.voti_creati}\n` +
+                  `• Pagelle create: ${stats.pagelle_create}\n` +
+                  `• Materie: ${stats.materie}`);
+            
+            // Ricarica le pagelle
+            await mostraPagelle();
+        } else {
+            alert('Errore: ' + result.errore);
+        }
+        
+    } catch (error) {
+        console.error('Errore generazione pagelle:', error);
+        alert('Errore durante la generazione delle pagelle');
+    } finally {
+        const btn = event.target;
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-plus-circle"></i> Genera Pagelle Complete';
+    }
+}
+
+async function mostraPagelle() {
+    try {
+        // Carica pagelle reali dall'API
+        const response = await fetch('/api/pagelle');
+        const pagelle = await response.json();
+        
+        if (pagelle.length === 0) {
+            document.getElementById('pagelleContainer').innerHTML = 
+                '<div class="alert alert-warning">Nessuna pagella trovata. Clicca su "Genera Pagelle Complete" per creare le pagelle.</div>';
+            return;
+        }
+        
+        // Salva i dati per export
+        pagelleData = pagelle;
+        
+        mostraPagelleReali(pagelle);
+        
+        // Carica anche le statistiche
+        caricaStatistichePagelle();
+        
+    } catch (error) {
+        console.error('Errore caricamento pagelle:', error);
+        document.getElementById('pagelleContainer').innerHTML = 
+            '<div class="alert alert-danger">Errore durante il caricamento delle pagelle</div>';
+    }
+}
+
+function mostraPagelleSimulate(studenti) {
+    const materie = ['Matematica', 'Italiano', 'Inglese', 'Storia', 'Educazione Fisica', 'Religione'];
+    const container = document.getElementById('pagelleContainer');
+    const template = document.getElementById('pagellaTemplate');
+    
+    container.innerHTML = '';
+    
+    studenti.slice(0, 10).forEach(studente => {  // Mostra primi 10
+        const clone = template.content.cloneNode(true);
+        
+        // Genera voti simulati per ogni materia
+        const votiMaterie = {};
+        let sommaVoti = 0;
+        
+        materie.forEach(materia => {
+            // Voto simulato basato sulla fragilità
+            const baseVoto = 7.5 - (studente.fragilita || 20) / 50;
+            let voto = baseVoto + (Math.random() - 0.5) * 2;
+            
+            // Aggiustamenti per materie specifiche
+            if (materia === 'Educazione Fisica') voto += 0.5;
+            if (materia === 'Religione') voto += 0.3;
+            
+            voto = Math.max(3, Math.min(10, voto));
+            votiMaterie[materia] = Math.round(voto * 10) / 10;
+            sommaVoti += votiMaterie[materia];
+        });
+        
+        const mediaGenerale = Math.round((sommaVoti / materie.length) * 100) / 100;
+        const votoCondotta = Math.round((8.5 - (studente.fragilita || 20) / 100 + Math.random() * 0.5) * 10) / 10;
+        const assenze = Math.floor((studente.fragilita || 20) / 5) + Math.floor(Math.random() * 10);
+        
+        // Riempi template
+        clone.querySelector('.student-name').textContent = studente.nome_completo || `${studente.nome} ${studente.cognome}`;
+        clone.querySelector('.student-class').textContent = studente.classe || 'N/A';
+        clone.querySelector('.student-age').textContent = studente.eta || 'N/A';
+        clone.querySelector('.media-generale').textContent = mediaGenerale;
+        clone.querySelector('.voto-condotta').textContent = votoCondotta;
+        clone.querySelector('.assenze').textContent = assenze;
+        
+        // Note basate sulla media
+        let nota = 'Rendimento regolare';
+        if (mediaGenerale >= 8) nota = 'Ottimo rendimento';
+        else if (mediaGenerale >= 7) nota = 'Buon rendimento';
+        else if (mediaGenerale < 6) nota = 'Necessita supporto';
+        
+        clone.querySelector('.note-pagella').textContent = nota;
+        
+        // Voti per materia
+        const votiContainer = clone.querySelector('.voti-materie');
+        Object.entries(votiMaterie).forEach(([materia, voto]) => {
+            const col = document.createElement('div');
+            col.className = 'col-md-4 col-sm-6';
+            
+            let badgeClass = 'bg-secondary';
+            if (voto >= 8) badgeClass = 'bg-success';
+            else if (voto >= 7) badgeClass = 'bg-primary';
+            else if (voto >= 6) badgeClass = 'bg-warning';
+            else badgeClass = 'bg-danger';
+            
+            col.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                    <small class="text-muted">${materia}</small>
+                    <span class="badge ${badgeClass}">${voto}</span>
+                </div>
+            `;
+            votiContainer.appendChild(col);
+        });
+        
+        container.appendChild(clone);
+    });
+}
+
+function esportaPagelle() {
+    if (pagelleData.length === 0) {
+        alert('Nessuna pagella da esportare. Genera prima le pagelle.');
+        return;
+    }
+    
+    const dataStr = JSON.stringify(pagelleData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = 'pagelle_complete.json';
+    link.click();
+}
+
+// Carica pagelle all'avvio se disponibili
+document.addEventListener('DOMContentLoaded', function() {
+    // Carica automaticamente se ci sono studenti
+    fetch('/api/studenti')
+        .then(response => response.json())
+        .then(studenti => {
+            if (studenti.length > 0) {
+                mostraPagelleSimulate(studenti);
+            }
+        })
+        .catch(console.error);
+});
+</script>
+{% endblock %}
+
+
