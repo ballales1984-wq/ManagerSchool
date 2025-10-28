@@ -3,6 +3,7 @@ Registro Scolastico Intelligente
 Main entry point con menu interattivo
 """
 
+import os
 from anagrafica import Anagrafica
 from insegnanti import GestioneInsegnanti
 from voti import GestioneVoti

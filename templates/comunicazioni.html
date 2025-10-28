@@ -1,0 +1,608 @@
+{% extends "base.html" %}
+
+{% block title %}Comunicazioni - Registro ERP{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-chat-dots"></i> Comunicazioni Scuola-Famiglia</h2>
+        <p class="text-muted">Sistema completo di messaggistica e notifiche</p>
+    </div>
+</div>
+
+<!-- Statistiche Comunicazioni -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card primary">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Totale Comunicazioni</h6>
+                <h2 id="totaleComunicazioni">0</h2>
+                <small>Messaggi totali</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card warning">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Non Lette</h6>
+                <h2 id="nonLette">0</h2>
+                <small>Da leggere</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card success">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Lette</h6>
+                <h2 id="lette">0</h2>
+                <small>Percentuale lettura</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card info">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Oggi</h6>
+                <h2 id="comunicazioniOggi">0</h2>
+                <small>Inviate oggi</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Azioni Rapide -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Azioni Rapide</h5>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-primary me-2" onclick="nuovaComunicazione()">
+                    <i class="bi bi-plus-circle"></i> Nuova Comunicazione
+                </button>
+                <button class="btn btn-success me-2" onclick="generaComunicazioniDemo()">
+                    <i class="bi bi-envelope-plus"></i> Genera Demo
+                </button>
+                <button class="btn btn-info me-2" onclick="visualizzaNotifiche()">
+                    <i class="bi bi-bell"></i> Notifiche Automatiche
+                </button>
+                <button class="btn btn-secondary" onclick="esportaComunicazioni()">
+                    <i class="bi bi-download"></i> Esporta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtri -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Filtri</h6>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Stato</label>
+                        <select class="form-select" id="filtroStato">
+                            <option value="">Tutte</option>
+                            <option value="non_lette">Non Lette</option>
+                            <option value="lette">Lette</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-select" id="filtroTipo">
+                            <option value="">Tutti i tipi</option>
+                            <option value="notifica">Notifiche</option>
+                            <option value="messaggio">Messaggi</option>
+                            <option value="avviso">Avvisi</option>
+                            <option value="urgente">Urgenti</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Priorità</label>
+                        <select class="form-select" id="filtroPriorita">
+                            <option value="">Tutte</option>
+                            <option value="urgente">Urgente</option>
+                            <option value="alta">Alta</option>
+                            <option value="media">Media</option>
+                            <option value="bassa">Bassa</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-secondary w-100" onclick="applicaFiltri()">
+                            <i class="bi bi-funnel"></i> Applica Filtri
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lista Comunicazioni -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Lista Comunicazioni</h5>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="aggiornamentoAuto" checked>
+                    <label class="form-check-label" for="aggiornamentoAuto">
+                        Auto-aggiorna
+                    </label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="comunicazioniContainer">
+                    <div class="text-center py-4">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Caricamento...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Caricamento comunicazioni...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nuova Comunicazione -->
+<div class="modal fade" id="modalNuovaComunicazione" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuova Comunicazione</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formNuovaComunicazione">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Destinatario Tipo</label>
+                            <select class="form-select" id="destinatarioTipo" required>
+                                <option value="">Seleziona tipo</option>
+                                <option value="genitore">Genitore</option>
+                                <option value="insegnante">Insegnante</option>
+                                <option value="dirigente">Dirigente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Destinatario ID</label>
+                            <input type="number" class="form-control" id="destinatarioId" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Studente (opzionale)</label>
+                            <input type="number" class="form-control" id="studenteId" placeholder="ID Studente">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Priorità</label>
+                            <select class="form-select" id="priorita">
+                                <option value="media">Media</option>
+                                <option value="bassa">Bassa</option>
+                                <option value="alta">Alta</option>
+                                <option value="urgente">Urgente</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Oggetto</label>
+                        <input type="text" class="form-control" id="oggetto" required maxlength="200">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Messaggio</label>
+                        <textarea class="form-control" id="messaggio" rows="5" required maxlength="2000"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-primary" onclick="inviaComunicazione()">
+                    <i class="bi bi-send"></i> Invia
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Risposta -->
+<div class="modal fade" id="modalRisposta" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rispondi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <strong>Messaggio originale:</strong>
+                    <div class="border rounded p-2 bg-light" id="messaggioOriginale"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">La tua risposta</label>
+                    <textarea class="form-control" id="testoRisposta" rows="4" required maxlength="2000"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                <button type="button" class="btn btn-primary" onclick="inviaRisposta()">
+                    <i class="bi bi-reply"></i> Rispondi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Notifiche Automatiche -->
+<div class="modal fade" id="modalNotifiche" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Notifiche Automatiche</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="notificheContainer">
+                    <!-- Notifiche verranno caricate qui -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let comunicazioniData = [];
+let comunicazioneRispostaId = null;
+let intervalloAggiornamento = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    caricaStatistiche();
+    caricaComunicazioni();
+    
+    // Auto-aggiornamento ogni 30 secondi se attivato
+    intervalloAggiornamento = setInterval(() => {
+        if (document.getElementById('aggiornamentoAuto').checked) {
+            caricaComunicazioni();
+            caricaStatistiche();
+        }
+    }, 30000);
+});
+
+async function caricaStatistiche() {
+    try {
+        const response = await fetch('/api/comunicazioni/statistiche');
+        const stats = await response.json();
+        
+        document.getElementById('totaleComunicazioni').textContent = stats.totale;
+        document.getElementById('nonLette').textContent = stats.non_lette;
+        document.getElementById('lette').textContent = `${stats.percentuale_lettura}%`;
+        document.getElementById('comunicazioniOggi').textContent = stats.comunicazioni_oggi;
+        
+    } catch (error) {
+        console.error('Errore caricamento statistiche:', error);
+    }
+}
+
+async function caricaComunicazioni() {
+    try {
+        const response = await fetch('/api/comunicazioni');
+        const comunicazioni = await response.json();
+        comunicazioniData = comunicazioni;
+        
+        mostraComunicazioni(comunicazioni);
+        
+    } catch (error) {
+        console.error('Errore caricamento comunicazioni:', error);
+        document.getElementById('comunicazioniContainer').innerHTML = 
+            '<div class="alert alert-danger">Errore nel caricamento delle comunicazioni</div>';
+    }
+}
+
+function mostraComunicazioni(comunicazioni) {
+    const container = document.getElementById('comunicazioniContainer');
+    
+    if (comunicazioni.length === 0) {
+        container.innerHTML = `
+            <div class="alert alert-info text-center">
+                <i class="bi bi-inbox"></i>
+                <h5>Nessuna comunicazione trovata</h5>
+                <p class="mb-0">Inizia creando una nuova comunicazione o genera dati demo.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '<div class="list-group">';
+    
+    comunicazioni.forEach(com => {
+        const iconaPriorita = {
+            'urgente': '<i class="bi bi-exclamation-triangle text-danger"></i>',
+            'alta': '<i class="bi bi-exclamation-circle text-warning"></i>',
+            'media': '<i class="bi bi-info-circle text-info"></i>',
+            'bassa': '<i class="bi bi-circle text-muted"></i>'
+        }[com.priorita] || '<i class="bi bi-circle text-muted"></i>';
+        
+        const iconaTipo = {
+            'notifica': '<i class="bi bi-bell"></i>',
+            'messaggio': '<i class="bi bi-chat-dots"></i>',
+            'avviso': '<i class="bi bi-exclamation-diamond"></i>',
+            'urgente': '<i class="bi bi-lightning"></i>'
+        }[com.tipo] || '<i class="bi bi-envelope"></i>';
+        
+        const badgeStato = com.is_letta ? 
+            '<span class="badge bg-success">Letta</span>' : 
+            '<span class="badge bg-warning">Non Letta</span>';
+        
+        const dataFormatted = new Date(com.data_invio).toLocaleString('it-IT');
+        
+        html += `
+            <div class="list-group-item ${!com.is_letta ? 'border-start border-warning border-3' : ''}">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center mb-2">
+                            ${iconaPriorita}
+                            ${iconaTipo}
+                            <h6 class="mb-0 ms-2">${com.oggetto}</h6>
+                            ${badgeStato}
+                        </div>
+                        <p class="mb-1 text-muted">${com.messaggio.substring(0, 150)}${com.messaggio.length > 150 ? '...' : ''}</p>
+                        <small class="text-muted">
+                            Da: ${com.mittente_tipo} (ID: ${com.mittente_id}) | 
+                            A: ${com.destinatario_tipo} (ID: ${com.destinatario_id}) | 
+                            ${dataFormatted}
+                        </small>
+                        ${com.studente_id ? `<br><small class="text-info">Studente ID: ${com.studente_id}</small>` : ''}
+                    </div>
+                    <div class="btn-group ms-3" role="group">
+                        ${!com.is_letta ? 
+                            `<button class="btn btn-sm btn-outline-success" onclick="marcaComeLetta(${com.id})" title="Marca come letta">
+                                <i class="bi bi-check2"></i>
+                            </button>` : ''}
+                        <button class="btn btn-sm btn-outline-primary" onclick="rispondi(${com.id})" title="Rispondi">
+                            <i class="bi bi-reply"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-info" onclick="visualizzaDettagli(${com.id})" title="Dettagli">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function applicaFiltri() {
+    const stato = document.getElementById('filtroStato').value;
+    const tipo = document.getElementById('filtroTipo').value;
+    const priorita = document.getElementById('filtroPriorita').value;
+    
+    let comunicazioniFiltrate = [...comunicazioniData];
+    
+    if (stato === 'non_lette') {
+        comunicazioniFiltrate = comunicazioniFiltrate.filter(c => !c.is_letta);
+    } else if (stato === 'lette') {
+        comunicazioniFiltrate = comunicazioniFiltrate.filter(c => c.is_letta);
+    }
+    
+    if (tipo) {
+        comunicazioniFiltrate = comunicazioniFiltrate.filter(c => c.tipo === tipo);
+    }
+    
+    if (priorita) {
+        comunicazioniFiltrate = comunicazioniFiltrate.filter(c => c.priorita === priorita);
+    }
+    
+    mostraComunicazioni(comunicazioniFiltrate);
+}
+
+function nuovaComunicazione() {
+    const modal = new bootstrap.Modal(document.getElementById('modalNuovaComunicazione'));
+    modal.show();
+}
+
+async function inviaComunicazione() {
+    const form = document.getElementById('formNuovaComunicazione');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    const data = {
+        destinatario_tipo: document.getElementById('destinatarioTipo').value,
+        destinatario_id: parseInt(document.getElementById('destinatarioId').value),
+        studente_id: document.getElementById('studenteId').value ? 
+            parseInt(document.getElementById('studenteId').value) : null,
+        oggetto: document.getElementById('oggetto').value,
+        messaggio: document.getElementById('messaggio').value
+    };
+    
+    try {
+        const response = await fetch('/api/comunicazioni/invia', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.successo) {
+            bootstrap.Modal.getInstance(document.getElementById('modalNuovaComunicazione')).hide();
+            form.reset();
+            caricaComunicazioni();
+            caricaStatistiche();
+            alert('Comunicazione inviata con successo!');
+        } else {
+            alert('Errore nell\'invio: ' + result.messaggio);
+        }
+        
+    } catch (error) {
+        console.error('Errore invio comunicazione:', error);
+        alert('Errore nell\'invio della comunicazione');
+    }
+}
+
+async function marcaComeLetta(comunicazioneId) {
+    try {
+        const response = await fetch(`/api/comunicazioni/${comunicazioneId}/leggi`, {
+            method: 'POST'
+        });
+        
+        const result = await response.json();
+        
+        if (result.successo) {
+            caricaComunicazioni();
+            caricaStatistiche();
+        }
+        
+    } catch (error) {
+        console.error('Errore marcatura lettura:', error);
+    }
+}
+
+function rispondi(comunicazioneId) {
+    comunicazioneRispostaId = comunicazioneId;
+    const comunicazione = comunicazioniData.find(c => c.id === comunicazioneId);
+    
+    if (comunicazione) {
+        document.getElementById('messaggioOriginale').textContent = comunicazione.messaggio;
+        const modal = new bootstrap.Modal(document.getElementById('modalRisposta'));
+        modal.show();
+    }
+}
+
+async function inviaRisposta() {
+    const messaggio = document.getElementById('testoRisposta').value.trim();
+    
+    if (!messaggio) {
+        alert('Inserisci un messaggio di risposta');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/comunicazioni/${comunicazioneRispostaId}/rispondi`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messaggio })
+        });
+        
+        const result = await response.json();
+        
+        if (result.successo) {
+            bootstrap.Modal.getInstance(document.getElementById('modalRisposta')).hide();
+            document.getElementById('testoRisposta').value = '';
+            caricaComunicazioni();
+            alert('Risposta inviata con successo!');
+        } else {
+            alert('Errore nell\'invio: ' + result.messaggio);
+        }
+        
+    } catch (error) {
+        console.error('Errore invio risposta:', error);
+        alert('Errore nell\'invio della risposta');
+    }
+}
+
+async function generaComunicazioniDemo() {
+    try {
+        const response = await fetch('/api/comunicazioni/genera-demo', {
+            method: 'POST'
+        });
+        
+        const result = await response.json();
+        
+        if (result.successo) {
+            alert(`Generate ${result.comunicazioni_generate} comunicazioni demo!`);
+            caricaComunicazioni();
+            caricaStatistiche();
+        }
+        
+    } catch (error) {
+        console.error('Errore generazione demo:', error);
+        alert('Errore nella generazione delle comunicazioni demo');
+    }
+}
+
+async function visualizzaNotifiche() {
+    try {
+        const response = await fetch('/api/comunicazioni/notifiche');
+        const notifiche = await response.json();
+        
+        let html = '<div class="row">';
+        
+        notifiche.forEach(notifica => {
+            const badgeStato = notifica.attiva ? 
+                '<span class="badge bg-success">Attiva</span>' : 
+                '<span class="badge bg-secondary">Disattiva</span>';
+            
+            html += `
+                <div class="col-md-6 mb-3">
+                    <div class="card ${notifica.attiva ? 'border-success' : 'border-secondary'}">
+                        <div class="card-header d-flex justify-content-between">
+                            <h6 class="mb-0">${notifica.nome}</h6>
+                            ${badgeStato}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">${notifica.descrizione}</p>
+                            <small class="text-muted">
+                                <strong>Evento:</strong> ${notifica.tipo_evento}<br>
+                                <strong>Frequenza:</strong> ${notifica.frequenza}
+                                ${notifica.soglia ? `<br><strong>Soglia:</strong> ${notifica.soglia}` : ''}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        
+        document.getElementById('notificheContainer').innerHTML = html;
+        
+        const modal = new bootstrap.Modal(document.getElementById('modalNotifiche'));
+        modal.show();
+        
+    } catch (error) {
+        console.error('Errore caricamento notifiche:', error);
+    }
+}
+
+function visualizzaDettagli(comunicazioneId) {
+    const comunicazione = comunicazioniData.find(c => c.id === comunicazioneId);
+    if (comunicazione) {
+        alert(`Dettagli Comunicazione ID: ${comunicazione.id}\n\nOggetto: ${comunicazione.oggetto}\n\nMessaggio: ${comunicazione.messaggio}\n\nInviata il: ${new Date(comunicazione.data_invio).toLocaleString('it-IT')}`);
+    }
+}
+
+function esportaComunicazioni() {
+    const dataStr = JSON.stringify(comunicazioniData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'comunicazioni_export.json';
+    link.click();
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (intervalloAggiornamento) {
+        clearInterval(intervalloAggiornamento);
+    }
+});
+</script>
+{% endblock %}
+
+

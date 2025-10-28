@@ -54,18 +54,8 @@ class InterfacciaERP:
             self.anagrafica, self.voti, self.insegnanti, self.analisi
         )
         
-        # Inizializza analytics manualmente (sarà definito dopo)
-        try:
-            self.analytics = AnaliticaPredittiva(
-                self.anagrafica, 
-                self.voti, 
-                self.insegnanti, 
-                self.comunicazioni
-            )
-        except Exception as e:
-            print(f"⚠️  Analytics non disponibile: {e}")
-            self.analytics = None
-        
+        # Inizializza analytics con un decorator lazy-load
+        self._init_analytics()
         try:
             self.generatore_report = GeneratoreReport(
                 self.anagrafica, self.voti, self.insegnanti, 
@@ -146,9 +136,7 @@ class InterfacciaERP:
         @self.richiede_accesso
         def api_studenti():
             """API: Lista studenti."""
-            # Ordina gli studenti per classe
-            studenti_ordinati = sorted(self.anagrafica.studenti, key=lambda s: s.classe)
-            studenti = [s.to_dict() for s in studenti_ordinati]
+            studenti = [s.to_dict() for s in self.anagrafica.studenti]
             return jsonify(studenti)
         
         @self.app.route('/api/studenti/<int:studente_id>')
@@ -805,9 +793,7 @@ class InterfacciaERP:
         @self.richiede_accesso
         def pagina_studenti():
             """Pagina studenti."""
-            # Ordina gli studenti per classe prima di convertirli in dizionari
-            studenti_ordinati = sorted(self.anagrafica.studenti, key=lambda s: s.classe)
-            studenti = [s.to_dict() for s in studenti_ordinati]
+            studenti = [s.to_dict() for s in self.anagrafica.studenti]
             return render_template('studenti.html', studenti=studenti)
         
         @self.app.route('/insegnanti')
@@ -860,12 +846,6 @@ class InterfacciaERP:
             """Pagina comunicazioni scuola-famiglia."""
             return render_template('comunicazioni.html')
         
-        @self.app.route('/dashboard-dirigenza')
-        @self.richiede_accesso
-        def pagina_dashboard_dirigenza():
-            """Pagina dashboard dirigenza con analytics avanzate."""
-            return render_template('dashboard_dirigenza.html')
-        
         # ============ API STATISTICHE DASHBOARD ============
         
         @self.app.route('/api/dashboard/stats')
@@ -892,9 +872,6 @@ class InterfacciaERP:
     
     def _init_analytics(self):
         """Inizializza il modulo analytics."""
-        if self.comunicazioni is None:
-            return
-            
         try:
             self.analytics = AnaliticaPredittiva(
                 self.anagrafica, 

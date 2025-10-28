@@ -146,9 +146,7 @@ class InterfacciaERP:
         @self.richiede_accesso
         def api_studenti():
             """API: Lista studenti."""
-            # Ordina gli studenti per classe
-            studenti_ordinati = sorted(self.anagrafica.studenti, key=lambda s: s.classe)
-            studenti = [s.to_dict() for s in studenti_ordinati]
+            studenti = [s.to_dict() for s in self.anagrafica.studenti]
             return jsonify(studenti)
         
         @self.app.route('/api/studenti/<int:studente_id>')

@@ -21,7 +21,6 @@ from interventi import SimulatoreInterventi
 from calendario_scolastico import CalendarioScolastico
 from macro_dati import GestoreMacroDati
 from comunicazioni import GestioneComunicazioni
-from analytics_predittive import AnaliticaPredittiva
 
 
 class InterfacciaERP:
@@ -41,9 +40,6 @@ class InterfacciaERP:
         self.calendario = CalendarioScolastico()
         self.comunicazioni = GestioneComunicazioni()
         self.accesso = GestoreAccessi()
-        
-        # Inizializza analytics (dopo che tutti i moduli sono pronti)
-        self.analytics = None  # Sarà inizializzato dopo il caricamento dati
         try:
             self.gestore_macro_dati = GestoreMacroDati(self.anagrafica)
         except Exception:
@@ -53,19 +49,6 @@ class InterfacciaERP:
         self.calcolatore_indicatori = CalcolatoreIndicatori(
             self.anagrafica, self.voti, self.insegnanti, self.analisi
         )
-        
-        # Inizializza analytics manualmente (sarà definito dopo)
-        try:
-            self.analytics = AnaliticaPredittiva(
-                self.anagrafica, 
-                self.voti, 
-                self.insegnanti, 
-                self.comunicazioni
-            )
-        except Exception as e:
-            print(f"⚠️  Analytics non disponibile: {e}")
-            self.analytics = None
-        
         try:
             self.generatore_report = GeneratoreReport(
                 self.anagrafica, self.voti, self.insegnanti, 
@@ -146,9 +129,7 @@ class InterfacciaERP:
         @self.richiede_accesso
         def api_studenti():
             """API: Lista studenti."""
-            # Ordina gli studenti per classe
-            studenti_ordinati = sorted(self.anagrafica.studenti, key=lambda s: s.classe)
-            studenti = [s.to_dict() for s in studenti_ordinati]
+            studenti = [s.to_dict() for s in self.anagrafica.studenti]
             return jsonify(studenti)
         
         @self.app.route('/api/studenti/<int:studente_id>')
@@ -602,212 +583,13 @@ class InterfacciaERP:
                 }
             })
         
-        # ============ API COMUNICAZIONI SCUOLA-FAMIGLIA ============
-        
-        @self.app.route('/api/comunicazioni')
-        @self.richiede_accesso
-        def api_comunicazioni():
-            """API: Lista comunicazioni per l'utente corrente."""
-            user_id = session.get('user_id', 1)  # Default per demo
-            tipo_utente = session.get('ruolo', 'admin')
-            
-            solo_non_lette = request.args.get('non_lette', 'false').lower() == 'true'
-            
-            comunicazioni = self.comunicazioni.get_comunicazioni_per_utente(
-                user_id, tipo_utente, solo_non_lette
-            )
-            
-            return jsonify([com.to_dict() for com in comunicazioni])
-        
-        @self.app.route('/api/comunicazioni/invia', methods=['POST'])
-        @self.richiede_accesso
-        def api_invia_comunicazione():
-            """API: Invia nuova comunicazione."""
-            data = request.get_json()
-            
-            comunicazione = self.comunicazioni.crea_comunicazione(
-                mittente_id=session.get('user_id', 1),
-                mittente_tipo=session.get('ruolo', 'admin'),
-                destinatario_id=data['destinatario_id'],
-                destinatario_tipo=data['destinatario_tipo'],
-                oggetto=data['oggetto'],
-                messaggio=data['messaggio'],
-                studente_id=data.get('studente_id')
-            )
-            
-            return jsonify({
-                "successo": True,
-                "comunicazione_id": comunicazione.id,
-                "messaggio": "Comunicazione inviata con successo"
-            })
-        
-        @self.app.route('/api/comunicazioni/<int:comunicazione_id>/leggi', methods=['POST'])
-        @self.richiede_accesso
-        def api_leggi_comunicazione(comunicazione_id):
-            """API: Marca comunicazione come letta."""
-            user_id = session.get('user_id', 1)
-            
-            successo = self.comunicazioni.marca_come_letta(comunicazione_id, user_id)
-            
-            return jsonify({
-                "successo": successo,
-                "messaggio": "Comunicazione marcata come letta" if successo else "Errore nell'operazione"
-            })
-        
-        @self.app.route('/api/comunicazioni/<int:comunicazione_id>/rispondi', methods=['POST'])
-        @self.richiede_accesso
-        def api_rispondi_comunicazione(comunicazione_id):
-            """API: Risponde a una comunicazione."""
-            data = request.get_json()
-            
-            risposta = self.comunicazioni.crea_risposta(
-                comunicazione_originale_id=comunicazione_id,
-                mittente_id=session.get('user_id', 1),
-                mittente_tipo=session.get('ruolo', 'admin'),
-                messaggio=data['messaggio']
-            )
-            
-            if risposta:
-                return jsonify({
-                    "successo": True,
-                    "risposta_id": risposta.id,
-                    "messaggio": "Risposta inviata con successo"
-                })
-            else:
-                return jsonify({
-                    "successo": False,
-                    "messaggio": "Errore nell'invio della risposta"
-                }), 400
-        
-        @self.app.route('/api/comunicazioni/studente/<int:studente_id>')
-        @self.richiede_accesso
-        def api_comunicazioni_studente(studente_id):
-            """API: Comunicazioni relative a uno studente."""
-            comunicazioni = self.comunicazioni.get_comunicazioni_studente(studente_id)
-            return jsonify([com.to_dict() for com in comunicazioni])
-        
-        @self.app.route('/api/comunicazioni/statistiche')
-        @self.richiede_accesso
-        def api_comunicazioni_statistiche():
-            """API: Statistiche delle comunicazioni."""
-            return jsonify(self.comunicazioni.get_statistiche_comunicazioni())
-        
-        @self.app.route('/api/comunicazioni/notifiche')
-        @self.richiede_accesso
-        def api_notifiche_automatiche():
-            """API: Lista notifiche automatiche configurate."""
-            return jsonify([n.to_dict() for n in self.comunicazioni.notifiche_automatiche])
-        
-        @self.app.route('/api/comunicazioni/genera-demo', methods=['POST'])
-        @self.richiede_accesso
-        def api_genera_comunicazioni_demo():
-            """API: Genera comunicazioni demo per test."""
-            studenti_ids = [s.id for s in self.anagrafica.studenti]
-            insegnanti_ids = [i.id for i in self.insegnanti.insegnanti]
-            
-            comunicazioni_prima = len(self.comunicazioni)
-            self.comunicazioni.genera_comunicazioni_demo(studenti_ids, insegnanti_ids)
-            comunicazioni_dopo = len(self.comunicazioni)
-            
-            return jsonify({
-                "successo": True,
-                "comunicazioni_generate": comunicazioni_dopo - comunicazioni_prima,
-                "messaggio": "Comunicazioni demo generate con successo"
-            })
-        
-        # ============ API ANALYTICS E DASHBOARD DIRIGENZA ============
-        
-        @self.app.route('/api/analytics/report-ministeriale')
-        @self.richiede_accesso
-        def api_report_ministeriale():
-            """API: Genera report ministeriale completo."""
-            if not self.analytics:
-                return jsonify({"errore": "Analytics non disponibile"}), 503
-            
-            report = self.analytics.genera_report_ministeriale()
-            return jsonify(report)
-        
-        @self.app.route('/api/analytics/studenti-rischio')
-        @self.richiede_accesso
-        def api_studenti_rischio():
-            """API: Lista studenti a rischio."""
-            if not self.analytics:
-                return jsonify({"errore": "Analytics non disponibile"}), 503
-            
-            soglia = request.args.get('soglia', 5.5, type=float)
-            studenti = self.analytics.identifica_studenti_rischio(soglia)
-            return jsonify(studenti)
-        
-        @self.app.route('/api/analytics/allerte')
-        @self.richiede_accesso
-        def api_allerte():
-            """API: Lista allerte attive."""
-            if not self.analytics:
-                return jsonify({"errore": "Analytics non disponibile"}), 503
-            
-            solo_attive = request.args.get('solo_attive', 'true').lower() == 'true'
-            allerte = self.analytics.get_allerte(solo_attive)
-            return jsonify(allerte)
-        
-        @self.app.route('/api/analytics/genera-allerte', methods=['POST'])
-        @self.richiede_accesso
-        def api_genera_allerte():
-            """API: Genera allerte automatiche."""
-            if not self.analytics:
-                return jsonify({"errore": "Analytics non disponibile"}), 503
-            
-            nuove_allerte = self.analytics.genera_allerte_automatiche()
-            return jsonify({
-                "successo": True,
-                "allerte_generate": len(nuove_allerte),
-                "allerte": [a.to_dict() for a in nuove_allerte]
-            })
-        
-        @self.app.route('/api/analytics/trend-rendimento')
-        @self.richiede_accesso
-        def api_trend_rendimento():
-            """API: Trend rendimento studenti."""
-            if not self.analytics:
-                return jsonify({"errore": "Analytics non disponibile"}), 503
-            
-            giorni = request.args.get('giorni', 30, type=int)
-            trend = self.analytics.get_trend_rendimento(giorni)
-            return jsonify(trend.to_dict())
-        
-        @self.app.route('/api/analytics/statistiche-scuola')
-        @self.richiede_accesso
-        def api_statistiche_scuola():
-            """API: Statistiche generali della scuola."""
-            if not self.analytics:
-                return jsonify({"errore": "Analytics non disponibile"}), 503
-            
-            return jsonify({
-                "media_generale": round(self.analytics.calcola_media_generale_scuola(), 2),
-                "tasso_frequenza": round(self.analytics.calcola_tasso_frequenza(), 2),
-                "totale_studenti": len(self.anagrafica.studenti),
-                "totale_insegnanti": len(self.insegnanti.insegnanti),
-                "studenti_rischio": len(self.analytics.identifica_studenti_rischio())
-            })
-        
-        @self.app.route('/api/analytics/distribuzione-classi')
-        @self.richiede_accesso
-        def api_distribuzione_classi():
-            """API: Distribuzione performance per classe."""
-            if not self.analytics:
-                return jsonify({"errore": "Analytics non disponibile"}), 503
-            
-            distribuzione = self.analytics._analizza_distribuzione_classi()
-            return jsonify(distribuzione)
-        
         # ============ ROUTES PAGINE WEB ============
         
         @self.app.route('/studenti')
         @self.richiede_accesso
         def pagina_studenti():
             """Pagina studenti."""
-            # Ordina gli studenti per classe prima di convertirli in dizionari
-            studenti_ordinati = sorted(self.anagrafica.studenti, key=lambda s: s.classe)
-            studenti = [s.to_dict() for s in studenti_ordinati]
+            studenti = [s.to_dict() for s in self.anagrafica.studenti]
             return render_template('studenti.html', studenti=studenti)
         
         @self.app.route('/insegnanti')
@@ -854,18 +636,6 @@ class InterfacciaERP:
             """Pagina calendario scolastico."""
             return render_template('calendario.html')
         
-        @self.app.route('/comunicazioni')
-        @self.richiede_accesso
-        def pagina_comunicazioni():
-            """Pagina comunicazioni scuola-famiglia."""
-            return render_template('comunicazioni.html')
-        
-        @self.app.route('/dashboard-dirigenza')
-        @self.richiede_accesso
-        def pagina_dashboard_dirigenza():
-            """Pagina dashboard dirigenza con analytics avanzate."""
-            return render_template('dashboard_dirigenza.html')
-        
         # ============ API STATISTICHE DASHBOARD ============
         
         @self.app.route('/api/dashboard/stats')
@@ -889,22 +659,6 @@ class InterfacciaERP:
         }
     
     # ============ DECORATORS ============
-    
-    def _init_analytics(self):
-        """Inizializza il modulo analytics."""
-        if self.comunicazioni is None:
-            return
-            
-        try:
-            self.analytics = AnaliticaPredittiva(
-                self.anagrafica, 
-                self.voti, 
-                self.insegnanti, 
-                self.comunicazioni
-            )
-        except Exception as e:
-            print(f"⚠️  Analytics non disponibile: {e}")
-            self.analytics = None
     
     def richiede_accesso(self, f):
         """Decorator per richiedere autenticazione."""

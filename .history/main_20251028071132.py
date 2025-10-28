@@ -3,6 +3,7 @@ Registro Scolastico Intelligente
 Main entry point con menu interattivo
 """
 
+import os
 from anagrafica import Anagrafica
 from insegnanti import GestioneInsegnanti
 from voti import GestioneVoti
@@ -175,7 +176,7 @@ class RegistroScolastico:
         print(f"✅ {len(self.insegnanti.insegnanti)} insegnanti creati!")
         
         # Genera voti
-        print("\n📝 Generando voti...")
+        print(f"\n📝 Generando voti...")
         # Materie complete per pagelle realistiche
         materie = ["Matematica", "Italiano", "Inglese", "Storia", "Educazione Fisica", "Religione"]
         voti_creati = 0
@@ -243,7 +244,7 @@ class RegistroScolastico:
         print("\n📊 STATISTICHE ANAGRAFICA")
         print(f"Totale studenti: {stats['totale_studenti']}")
         print(f"Reddito medio: €{stats['reddito_medio']:,}")
-        print("\nFragilità sociale:")
+        print(f"\nFragilità sociale:")
         frag = stats['statistica_fragilita']
         print(f"  Media: {frag['media']}")
         print(f"  Alta: {frag['percentuale_alta']}%")
@@ -302,7 +303,7 @@ class RegistroScolastico:
         voti = self.voti.voti_studente(stud_id)
         
         if voti:
-            print("\n📝 Voti studente:")
+            print(f"\n📝 Voti studente:")
             for v in voti[:10]:
                 print(f"  {v.materia}: {v.voto:.1f} ({v.tipo})")
         else:

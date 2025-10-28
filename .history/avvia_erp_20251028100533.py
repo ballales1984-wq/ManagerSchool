@@ -29,8 +29,8 @@ def main():
     
     # Genera studenti e insegnanti se non ci sono dati
     if len(registro.anagrafica.studenti) == 0:
-        print("   → Generando 120 studenti...")
-        registro.anagrafica.genera_studenti(120)
+        print("   → Generando 30 studenti...")
+        registro.anagrafica.genera_studenti(30)
     
     if len(registro.insegnanti.insegnanti) == 0:
         print("   → Generando 12 insegnanti specializzati...")

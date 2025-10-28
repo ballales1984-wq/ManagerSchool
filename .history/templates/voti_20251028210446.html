@@ -248,28 +248,9 @@ function mostraPagelleReali(pagelle) {
             
             // Voti per materia (reali dalla pagella)
             const votiContainer = clone.querySelector('.voti-materie');
-            
-            // Crea le due righe: materie sopra, voti sotto
-            const materie = Object.keys(pagella.voti_materie);
-            const voti = Object.values(pagella.voti_materie);
-            
-            // Prima riga: nomi materie
-            const rigaMaterie = document.createElement('div');
-            rigaMaterie.className = 'row mb-2';
-            materie.forEach(materia => {
+            Object.entries(pagella.voti_materie).forEach(([materia, voto]) => {
                 const col = document.createElement('div');
-                col.className = 'col';
-                col.innerHTML = `<small class="text-muted text-center d-block">${materia}</small>`;
-                rigaMaterie.appendChild(col);
-            });
-            votiContainer.appendChild(rigaMaterie);
-            
-            // Seconda riga: voti
-            const rigaVoti = document.createElement('div');
-            rigaVoti.className = 'row';
-            voti.forEach((voto, index) => {
-                const col = document.createElement('div');
-                col.className = 'col';
+                col.className = 'col-12';
                 
                 // Colore badge basato sul voto
                 let badgeClass = 'bg-secondary';
@@ -278,10 +259,14 @@ function mostraPagelleReali(pagelle) {
                 else if (voto >= 6) badgeClass = 'bg-warning';
                 else badgeClass = 'bg-danger';
                 
-                col.innerHTML = `<div class="text-center"><span class="badge ${badgeClass}">${voto.toFixed(1)}</span></div>`;
-                rigaVoti.appendChild(col);
+                col.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+                        <small class="text-muted">${materia}</small>
+                        <span class="badge ${badgeClass}">${voto.toFixed(1)}</span>
+                    </div>
+                `;
+                votiContainer.appendChild(col);
             });
-            votiContainer.appendChild(rigaVoti);
             
             // Aggiungi click handler per dettagli studente
             clone.querySelector('.pagella-card').addEventListener('click', () => {

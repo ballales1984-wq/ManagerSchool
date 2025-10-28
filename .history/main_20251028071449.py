@@ -3,6 +3,7 @@ Registro Scolastico Intelligente
 Main entry point con menu interattivo
 """
 
+import os
 from anagrafica import Anagrafica
 from insegnanti import GestioneInsegnanti
 from voti import GestioneVoti
@@ -302,7 +303,7 @@ class RegistroScolastico:
         voti = self.voti.voti_studente(stud_id)
         
         if voti:
-            print("\n📝 Voti studente:")
+            print(f"\n📝 Voti studente:")
             for v in voti[:10]:
                 print(f"  {v.materia}: {v.voto:.1f} ({v.tipo})")
         else:

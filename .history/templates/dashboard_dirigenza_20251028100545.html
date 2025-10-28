@@ -1,0 +1,533 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Dirigenza - Registro ERP{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-speedometer2"></i> Dashboard Dirigenza</h2>
+        <p class="text-muted">Analytics avanzate e monitoraggio performance</p>
+    </div>
+</div>
+
+<!-- KPI Principali -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card primary">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Media Generale</h6>
+                <h2 id="mediaGenerale">0.00</h2>
+                <small id="tendenzaMedia" class="text-muted">Caricamento...</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card success">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Tasso Frequenza</h6>
+                <h2 id="tassoFrequenza">0%</h2>
+                <small id="statoFrequenza" class="text-muted">Caricamento...</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card warning">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Studenti a Rischio</h6>
+                <h2 id="studentiRischio">0</h2>
+                <small id="percentualeRischio" class="text-muted">Caricamento...</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card stat-card danger">
+            <div class="card-body">
+                <h6 class="text-muted mb-1">Allerte Attive</h6>
+                <h2 id="allerteAttive">0</h2>
+                <small class="text-muted">Monitoraggio continuo</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Azioni Rapide -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Azioni Rapide</h5>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-primary me-2" onclick="generaReportMinisteriale()">
+                    <i class="bi bi-file-earmark-text"></i> Report Ministeriale
+                </button>
+                <button class="btn btn-warning me-2" onclick="generaAllerte()">
+                    <i class="bi bi-exclamation-triangle"></i> Genera Allerte
+                </button>
+                <button class="btn btn-success me-2" onclick="analizzaRischio()">
+                    <i class="bi bi-search"></i> Analizza Studenti a Rischio
+                </button>
+                <button class="btn btn-info" onclick="esportaDati()">
+                    <i class="bi bi-download"></i> Esporta Dati
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Grafici Dashboard -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Trend Rendimento (30 giorni)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="chartRendimento" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Distribuzione Performance</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="chartDistribuzione" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Allerte Attive -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Allerte Attive</h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="caricaAllerte()">
+                    <i class="bi bi-arrow-clockwise"></i> Aggiorna
+                </button>
+            </div>
+            <div class="card-body">
+                <div id="allerteContainer">
+                    <div class="text-center py-4">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Caricamento...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Distribuzione per Classe -->
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Performance per Classe</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Classe</th>
+                                <th>Studenti</th>
+                                <th>Media</th>
+                                <th>Min</th>
+                                <th>Max</th>
+                                <th>Dev. Standard</th>
+                                <th>Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabellaClassi">
+                            <!-- Dati caricati dinamicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Report Ministeriale -->
+<div class="modal fade" id="modalReport" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Report Ministeriale</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="reportContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Caricamento...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                <button type="button" class="btn btn-primary" onclick="esportaReport()">
+                    <i class="bi bi-download"></i> Esporta PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let chartRendimento = null;
+let chartDistribuzione = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    caricaStatisticheScuola();
+    caricaAllerte();
+    caricaDistribuzioneClassi();
+    
+    // Auto-aggiornamento ogni 5 minuti
+    setInterval(() => {
+        caricaStatisticheScuola();
+        caricaAllerte();
+    }, 300000);
+});
+
+async function caricaStatisticheScuola() {
+    try {
+        const response = await fetch('/api/analytics/statistiche-scuola');
+        const stats = await response.json();
+        
+        // KPI principali
+        document.getElementById('mediaGenerale').textContent = stats.media_generale;
+        document.getElementById('tassoFrequenza').textContent = stats.tasso_frequenza + '%';
+        document.getElementById('studentiRischio').textContent = stats.studenti_rischio;
+        
+        const totale = stats.totale_studenti;
+        const percentuale = ((stats.studenti_rischio / totale) * 100).toFixed(1);
+        document.getElementById('percentualeRischio').textContent = percentuale + '% del totale';
+        
+        // Tendenza
+        document.getElementById('tendenzaMedia').textContent = 
+            stats.media_generale >= 6.0 ? '✓ Superiore a 6.0' : '⚠ Sotto la soglia';
+        
+        // Stato frequenza
+        let statoFreq = '';
+        if (stats.tasso_frequenza >= 90) statoFreq = '✓ Buona';
+        else if (stats.tasso_frequenza >= 85) statoFreq = '○ Accettabile';
+        else statoFreq = '⚠ Critica';
+        document.getElementById('statoFrequenza').textContent = statoFreq;
+        
+        // Carica trend
+        caricaTrendRendimento();
+        
+    } catch (error) {
+        console.error('Errore caricamento statistiche:', error);
+    }
+}
+
+async function caricaTrendRendimento() {
+    try {
+        const response = await fetch('/api/analytics/trend-rendimento?giorni=30');
+        const trend = await response.json();
+        
+        // Grafico trend rendimento
+        const ctx = document.getElementById('chartRendimento');
+        if (chartRendimento) chartRendimento.destroy();
+        
+        chartRendimento = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: trend.valori.map((_, i) => i + 1),
+                datasets: [{
+                    label: 'Media Generale',
+                    data: trend.valori,
+                    borderColor: 'rgb(13, 110, 253)',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 5.0,
+                        max: 10.0
+                    }
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.error('Errore caricamento trend:', error);
+    }
+}
+
+async function caricaDistribuzioneClassi() {
+    try {
+        const response = await fetch('/api/analytics/distribuzione-classi');
+        const distribuzione = await response.json();
+        
+        const tbody = document.getElementById('tabellaClassi');
+        tbody.innerHTML = '';
+        
+        for (const [classe, dati] of Object.entries(distribuzione)) {
+            const stato = dati.media >= 6.5 ? '✓ Buono' : (dati.media >= 6.0 ? '○ Sufficiente' : '⚠ Critico');
+            const badgeClass = dati.media >= 6.5 ? 'success' : (dati.media >= 6.0 ? 'warning' : 'danger');
+            
+            const row = `
+                <tr>
+                    <td><strong>${classe}</strong></td>
+                    <td>${dati.numero_studenti}</td>
+                    <td>${dati.media}</td>
+                    <td>${dati.min}</td>
+                    <td>${dati.max}</td>
+                    <td>${dati.deviazione_standard}</td>
+                    <td><span class="badge bg-${badgeClass}">${stato}</span></td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        }
+        
+    } catch (error) {
+        console.error('Errore caricamento distribuzione:', error);
+    }
+}
+
+async function caricaAllerte() {
+    try {
+        const response = await fetch('/api/analytics/allerte?solo_attive=true');
+        const allerte = await response.json();
+        
+        document.getElementById('allerteAttive').textContent = allerte.length;
+        
+        const container = document.getElementById('allerteContainer');
+        
+        if (allerte.length === 0) {
+            container.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i>
+                    <strong>Nessuna allerta attiva</strong> - Tutti gli indicatori sono nella norma.
+                </div>
+            `;
+            return;
+        }
+        
+        let html = '<div class="list-group">';
+        
+        allerte.forEach(allerta => {
+            const iconaPriorita = {
+                'critica': '<i class="bi bi-exclamation-triangle-fill text-danger"></i>',
+                'alta': '<i class="bi bi-exclamation-circle text-warning"></i>',
+                'media': '<i class="bi bi-info-circle text-info"></i>',
+                'bassa': '<i class="bi bi-circle text-muted"></i>'
+            }[allerta.priorita] || '<i class="bi bi-circle text-muted"></i>';
+            
+            html += `
+                <div class="list-group-item border-start border-${allerta.priorita === 'critica' ? 'danger' : allerta.priorita === 'alta' ? 'warning' : 'info'} border-3">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center mb-2">
+                                ${iconaPriorita}
+                                <h6 class="mb-0 ms-2">${allerta.titolo}</h6>
+                                <span class="badge bg-${allerta.priorita === 'critica' ? 'danger' : allerta.priorita === 'alta' ? 'warning' : 'info'} ms-2">${allerta.priorita}</span>
+                            </div>
+                            <p class="mb-1">${allerta.descrizione}</p>
+                            <small class="text-muted">Tipo: ${allerta.tipo} | ${new Date(allerta.data_creazione).toLocaleString('it-IT')}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Errore caricamento allerte:', error);
+    }
+}
+
+async function generaReportMinisteriale() {
+    const modal = new bootstrap.Modal(document.getElementById('modalReport'));
+    modal.show();
+    
+    try {
+        const response = await fetch('/api/analytics/report-ministeriale');
+        const report = await response.json();
+        
+        let html = `
+            <div class="mb-4">
+                <h4>Report Ministeriale - Anno Scolastico ${report.anno_scolastico}</h4>
+                <p class="text-muted">Generato il: ${new Date(report.data_generazione).toLocaleString('it-IT')}</p>
+            </div>
+            
+            <h5 class="mt-4">Statistiche Generali</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Totale Studenti</h6>
+                            <h3>${report.statistiche_generali.totale_studenti}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Media Generale</h6>
+                            <h3>${report.statistiche_generali.media_generale_scuola}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Tasso Frequenza</h6>
+                            <h3>${report.statistiche_generali.tasso_frequenza}%</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Studenti a Rischio</h6>
+                            <h3>${report.studenti_rischio.totale} (${report.studenti_rischio.percentuale}%)</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h5 class="mt-4">Indicatori di Qualità</h5>
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Rendimento</h6>
+                            <span class="badge bg-${report.indicatori_qualita.rendimento === 'sufficiente' ? 'success' : 'warning'}">
+                                ${report.indicatori_qualita.rendimento}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Frequenza</h6>
+                            <span class="badge bg-${report.indicatori_qualita.frequenza === 'buona' ? 'success' : report.indicatori_qualita.frequenza === 'accettabile' ? 'warning' : 'danger'}">
+                                ${report.indicatori_qualita.frequenza}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Inclusione</h6>
+                            <span class="badge bg-${report.indicatori_qualita.inclusione === 'alta' ? 'success' : 'warning'}">
+                                ${report.indicatori_qualita.inclusione}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>Equilibrio</h6>
+                            <span class="badge bg-${report.indicatori_qualita.equilibrio === 'ottimo' || report.indicatori_qualita.equilibrio === 'buono' ? 'success' : report.indicatori_qualita.equilibrio === 'accettabile' ? 'warning' : 'danger'}">
+                                ${report.indicatori_qualita.equilibrio}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h5 class="mt-4">Raccomandazioni</h5>
+            <ul class="list-group mb-4">
+                ${report.raccomandazioni.map(r => `<li class="list-group-item">${r}</li>`).join('')}
+            </ul>
+        `;
+        
+        document.getElementById('reportContent').innerHTML = html;
+        
+    } catch (error) {
+        console.error('Errore generazione report:', error);
+        document.getElementById('reportContent').innerHTML = 
+            '<div class="alert alert-danger">Errore nella generazione del report</div>';
+    }
+}
+
+async function generaAllerte() {
+    try {
+        const response = await fetch('/api/analytics/genera-allerte', {
+            method: 'POST'
+        });
+        
+        const result = await response.json();
+        
+        if (result.successo) {
+            alert(`Generate ${result.allerte_generate} nuove allerte!`);
+            caricaAllerte();
+            document.getElementById('allerteAttive').textContent = 
+                parseInt(document.getElementById('allerteAttive').textContent) + result.allerte_generate;
+        }
+        
+    } catch (error) {
+        console.error('Errore generazione allerte:', error);
+        alert('Errore nella generazione delle allerte');
+    }
+}
+
+async function analizzaRischio() {
+    try {
+        const response = await fetch('/api/analytics/studenti-rischio');
+        const studenti = await response.json();
+        
+        if (studenti.length === 0) {
+            alert('Nessuno studente a rischio identificato!');
+            return;
+        }
+        
+        let alertMsg = `${studenti.length} studenti a rischio identificati:\n\n`;
+        
+        studenti.slice(0, 10).forEach(s => {
+            alertMsg += `• ${s.nome} (${s.classe}) - Media: ${s.media}, Priorità: ${s.priorita}\n`;
+        });
+        
+        if (studenti.length > 10) {
+            alertMsg += `\n... e altri ${studenti.length - 10} studenti.`;
+        }
+        
+        alert(alertMsg);
+        
+    } catch (error) {
+        console.error('Errore analisi rischio:', error);
+        alert('Errore nell\'analisi del rischio');
+    }
+}
+
+function esportaDati() {
+    alert('Funzionalità esportazione dati in sviluppo');
+}
+
+function esportaReport() {
+    alert('Funzionalità esportazione PDF in sviluppo');
+}
+</script>
+{% endblock %}

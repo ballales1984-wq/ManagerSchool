@@ -146,9 +146,7 @@ class InterfacciaERP:
         @self.richiede_accesso
         def api_studenti():
             """API: Lista studenti."""
-            # Ordina gli studenti per classe
-            studenti_ordinati = sorted(self.anagrafica.studenti, key=lambda s: s.classe)
-            studenti = [s.to_dict() for s in studenti_ordinati]
+            studenti = [s.to_dict() for s in self.anagrafica.studenti]
             return jsonify(studenti)
         
         @self.app.route('/api/studenti/<int:studente_id>')
@@ -805,9 +803,7 @@ class InterfacciaERP:
         @self.richiede_accesso
         def pagina_studenti():
             """Pagina studenti."""
-            # Ordina gli studenti per classe prima di convertirli in dizionari
-            studenti_ordinati = sorted(self.anagrafica.studenti, key=lambda s: s.classe)
-            studenti = [s.to_dict() for s in studenti_ordinati]
+            studenti = [s.to_dict() for s in self.anagrafica.studenti]
             return render_template('studenti.html', studenti=studenti)
         
         @self.app.route('/insegnanti')
@@ -892,9 +888,6 @@ class InterfacciaERP:
     
     def _init_analytics(self):
         """Inizializza il modulo analytics."""
-        if self.comunicazioni is None:
-            return
-            
         try:
             self.analytics = AnaliticaPredittiva(
                 self.anagrafica, 
