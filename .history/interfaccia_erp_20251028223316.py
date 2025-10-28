@@ -872,48 +872,6 @@ class InterfacciaERP:
             """Pagina dashboard dirigenza con analytics avanzate."""
             return render_template('dashboard_dirigenza.html')
         
-        @self.app.route('/inserimento-voti')
-        @self.richiede_accesso
-        def pagina_inserimento_voti():
-            """Pagina inserimento rapido voti."""
-            return render_template('inserimento_voti.html')
-        
-        # ============ API INSERIMENTO RAPIDO ============
-        
-        @self.app.route('/api/inserimento-rapido/voto', methods=['POST'])
-        @self.richiede_permesso("gestione_voti")
-        def api_inserimento_rapido():
-            """API: Inserisce voto tramite frase."""
-            data = request.get_json()
-            frase = data.get('frase', '')
-            
-            # Preleva dati utente dalla sessione
-            docente = session.get('username', 'Docente')
-            classe_corrente = request.args.get('classe', 'ClasseX')
-            
-            # Usa il gestore inserimento veloce
-            risultato = self.gestore_inserimento_rapido.inserisci_da_frase(
-                frase, docente, classe_corrente
-            )
-            
-            return jsonify(risultato)
-        
-        @self.app.route('/api/inserimento-rapido/cronologia')
-        @self.richiede_accesso
-        def api_cronologia_inserimenti():
-            """API: Cronologia inserimenti recenti."""
-            limit = request.args.get('limit', 10, type=int)
-            voci = self.gestore_inserimento_rapido.visualizza_cronologia(limit)
-            return jsonify(voci)
-        
-        @self.app.route('/api/studenti/search')
-        @self.richiede_accesso
-        def api_search_studenti():
-            """API: Ricerca studenti per autocompletamento."""
-            query = request.args.get('q', '')
-            risultati = self.gestore_inserimento_rapido.cerca_studenti(query)
-            return jsonify(risultati)
-        
         # ============ API STATISTICHE DASHBOARD ============
         
         @self.app.route('/api/dashboard/stats')
