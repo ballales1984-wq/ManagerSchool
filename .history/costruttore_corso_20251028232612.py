@@ -485,7 +485,7 @@ if __name__ == "__main__":
     anagrafica = Anagrafica()
     anagrafica.genera_studenti(10)
     
-    gestione_voti = GestioneVoti()
+    gestione_voti = GestioneVoti(anagrafica)
     
     # Crea costruttore
     costruttore = CostruttoreCorsoDocente(anagrafica, gestione_voti)

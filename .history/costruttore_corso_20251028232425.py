@@ -372,7 +372,9 @@ class CostruttoreCorsoDocente:
         """Programma una verifica.
         
         Args:
-            docente: Nome del docente
+            docente: N
+        """
+        nome del docente
             materia: Materia
             data: Data della verifica
             classe: Classe
@@ -485,7 +487,7 @@ if __name__ == "__main__":
     anagrafica = Anagrafica()
     anagrafica.genera_studenti(10)
     
-    gestione_voti = GestioneVoti()
+    gestione_voti = GestioneVoti(anagrafica)
     
     # Crea costruttore
     costruttore = CostruttoreCorsoDocente(anagrafica, gestione_voti)
