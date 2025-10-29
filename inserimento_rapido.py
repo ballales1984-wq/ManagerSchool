@@ -46,6 +46,10 @@ class InterpreteDocente:
         """
         frase_lower = frase.lower()
         
+        # Controlla se è un comando "carica lezione"
+        if "carica" in frase_lower and "lezione" in frase_lower:
+            return self._interpreta_lezione(frase_lower)
+        
         # Pattern base: [materia] [tipo] allunno [nome] voto [numero]
         pattern = r"(\w+)\s+(interroga[zi]*|verifica|compito|scritto|orale)\s+allunno\s+(\w+)\s+voto\s+(\d+(?:[.,]\d+)?)"
         
@@ -77,6 +81,43 @@ class InterpreteDocente:
             "voto": voto,
             "data": ora_attuale.strftime("%Y-%m-%d"),
             "ora": ora_attuale.strftime("%H:%M")
+        }
+    
+    def _interpreta_lezione(self, frase_lower: str) -> Dict:
+        """Interpreta comando caricamento lezione.
+        
+        Args:
+            frase_lower: Frase in minuscolo
+            
+        Returns:
+            Dizionario con dati lezione
+        """
+        # Cerca materia
+        materia = None
+        for mat_key, mat_val in self.vocabolario_materie.items():
+            if mat_key in frase_lower:
+                materia = mat_val
+                break
+        
+        # Cerca classe
+        classe_match = re.search(r'classe\s+(\d+[a-z])', frase_lower)
+        classe = classe_match.group(1).upper() if classe_match else None
+        
+        # Cerca argomento (dopo "su" o "riguardo")
+        argomento_match = re.search(r'(?:su|riguardo|argomento)\s+(.+?)(?:con|\.|$)', frase_lower)
+        argomento = argomento_match.group(1).strip() if argomento_match else ""
+        
+        # Cerca file allegati
+        file_match = re.search(r'(?:file|allegato|pdf|video)\s+([^\s]+)', frase_lower)
+        file_allegato = file_match.group(1) if file_match else None
+        
+        return {
+            "tipo": "lezione",
+            "materia": materia,
+            "classe": classe,
+            "argomento": argomento,
+            "file_allegato": file_allegato,
+            "data": datetime.now().strftime("%Y-%m-%d")
         }
     
     def suggerisci_completamento(self, testo_parziale: str) -> list:
@@ -184,6 +225,44 @@ class GestoreInserimentoVeloce:
             Lista di voci
         """
         return self.cronologia_voci[-limit:]
+    
+    def carica_lezione_da_frase(self, frase: str, docente: str, gestore_lezioni) -> Dict:
+        """Carica una lezione da frase in linguaggio naturale.
+        
+        Args:
+            frase: Frase comando
+            docente: Nome docente
+            gestore_lezioni: Istanza GestoreLezioni
+            
+        Returns:
+            Risultato caricamento
+        """
+        # Interpreta
+        dati = self.interprete.interpreta(frase)
+        
+        if "errore" in dati or dati.get("tipo") != "lezione":
+            return {"errore": "Comando lezione non riconosciuto"}
+        
+        # Carica lezione
+        from lezioni_docente import Visibilita
+        
+        lezione = gestore_lezioni.carica_lezione(
+            docente=docente,
+            titolo=f"Lezione {dati.get('materia', '')}",
+            materia=dati.get('materia', ''),
+            classe=dati.get('classe', ''),
+            argomento=dati.get('argomento', ''),
+            data_lezione=dati.get('data', ''),
+            tag=[dati.get('materia', '').lower()],
+            visibilita=Visibilita.PUBBLICA,
+            note=f"Caricata via interprete: {frase}"
+        )
+        
+        return {
+            "successo": True,
+            "lezione_id": lezione.id,
+            "messaggio": f"Lezione caricata: {lezione.titolo}"
+        }
     
     def cerca_studenti(self, query: str) -> list:
         """Cerca studenti per autocompletamento.
