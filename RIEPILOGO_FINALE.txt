@@ -1,0 +1,5 @@
+# RIEPILOGO FINALE MANAGERSCHOOL v3.0
+
+Moduli completati: 10
+Test superati: 54
+Pubblicato su GitHub: https://github.com/ballales1984-wq/ManagerSchool
