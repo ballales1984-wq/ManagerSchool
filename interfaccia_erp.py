@@ -1078,6 +1078,12 @@ class InterfacciaERP:
         def api_stats_dashboard():
             """API: Statistiche per dashboard."""
             return jsonify(self._calcola_statistiche_dashboard())
+        
+        @self.app.route('/api/dashboard/charts')
+        @self.richiede_accesso
+        def api_charts_dashboard():
+            """API: Dati per grafici dashboard."""
+            return jsonify(self._calcola_dati_grafici())
     
     def _calcola_statistiche_dashboard(self) -> Dict:
         """Calcola statistiche per la dashboard."""
@@ -1091,6 +1097,126 @@ class InterfacciaERP:
             "reddito_medio": stats_generali.get("reddito_medio", 0),
             "fragilita_media": fragilita_stats.get("media", 0),
             "fragilita_alta": fragilita_stats.get("percentuale_alta", 0)
+        }
+    
+    def _calcola_dati_grafici(self) -> Dict:
+        """Calcola dati per grafici interattivi."""
+        # Distribuzione voti
+        distribuzione = self._calcola_distribuzione_voti()
+        
+        # Trend andamento
+        trend = self._calcola_trend_andamento()
+        
+        # Fragilità vs voti
+        fragilita = self._calcola_fragilita_vs_voti()
+        
+        # Medie per materia
+        medie = self._calcola_medie_per_materia()
+        
+        # Presenze
+        presenze = self._calcola_presenze_chart()
+        
+        return {
+            "distribuzione": distribuzione,
+            "trend": trend,
+            "fragilita": fragilita,
+            "medie": medie,
+            "presenze": presenze
+        }
+    
+    def _calcola_distribuzione_voti(self) -> Dict:
+        """Calcola distribuzione voti per intervalli."""
+        voti = [v.voto for v in self.voti.voti]
+        distribuzione = {f"{i}-{i+1}": 0 for i in range(0, 10)}
+        
+        for voto in voti:
+            if 0 <= voto < 1:
+                distribuzione["0-1"] += 1
+            elif 1 <= voto < 2:
+                distribuzione["1-2"] += 1
+            elif 2 <= voto < 3:
+                distribuzione["2-3"] += 1
+            elif 3 <= voto < 4:
+                distribuzione["3-4"] += 1
+            elif 4 <= voto < 5:
+                distribuzione["4-5"] += 1
+            elif 5 <= voto < 6:
+                distribuzione["5-6"] += 1
+            elif 6 <= voto < 7:
+                distribuzione["6-7"] += 1
+            elif 7 <= voto < 8:
+                distribuzione["7-8"] += 1
+            elif 8 <= voto < 9:
+                distribuzione["8-9"] += 1
+            elif 9 <= voto <= 10:
+                distribuzione["9-10"] += 1
+        
+        return {
+            "labels": list(distribuzione.keys()),
+            "values": list(distribuzione.values())
+        }
+    
+    def _calcola_trend_andamento(self) -> Dict:
+        """Calcola trend andamento media nel tempo."""
+        # Calcola media per periodo
+        labels = []
+        medie = []
+        
+        # Simula trend (da implementare con dati reali)
+        for i in range(10):
+            labels.append(f"Settimana {i+1}")
+            medie.append(6.5 + (i * 0.1))
+        
+        return {
+            "labels": labels,
+            "medie": medie
+        }
+    
+    def _calcola_fragilita_vs_voti(self) -> Dict:
+        """Calcola correlazione fragilità-voti."""
+        points = []
+        
+        for studente in self.anagrafica.studenti[:20]:  # Limit a 20 studenti
+            voti_stud = [v.voto for v in self.voti.voti_studente(studente.id)]
+            if voti_stud:
+                media = sum(voti_stud) / len(voti_stud)
+                fragilita = getattr(studente, 'fragilita', 50)
+                points.append({"x": fragilita, "y": media})
+        
+        return {"points": points}
+    
+    def _calcola_medie_per_materia(self) -> Dict:
+        """Calcola medie per materia."""
+        materie = {}
+        
+        for voto in self.voti.voti:
+            if voto.materia not in materie:
+                materie[voto.materia] = []
+            materie[voto.materia].append(voto.voto)
+        
+        medie_calc = {m: sum(v) / len(v) for m, v in materie.items()}
+        
+        return {
+            "labels": list(medie_calc.keys()),
+            "values": list(medie_calc.values())
+        }
+    
+    def _calcola_presenze_chart(self) -> Dict:
+        """Calcola dati presenze per grafico."""
+        classi = set(s.classe for s in self.anagrafica.studenti)
+        
+        presenze_data = []
+        assenze_data = []
+        
+        for classe in sorted(classi):
+            # Simula dati (da implementare con dati reali presenze)
+            presenze_data.append(len([s for s in self.anagrafica.studenti if s.classe == classe]) * 0.9)
+            assenze_data.append(len([s for s in self.anagrafica.studenti if s.classe == classe]) * 0.1)
+        
+        return {
+            "labels": sorted(classi),
+            "presenze": presenze_data,
+            "assenze": assenze_data
         }
     
     # ============ DECORATORS ============

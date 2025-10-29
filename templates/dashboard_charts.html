@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Interattiva - ManagerSchool</title>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .chart-header {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+    
+    {% block content %}
+    <div class="container-fluid p-4">
+        <h1 class="mb-4">
+            <i class="bi bi-graph-up"></i> Dashboard Interattiva
+        </h1>
+        
+        <!-- Grafici Grid -->
+        <div class="row">
+            <!-- Distribuzione Voti -->
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header">Distribuzione Voti</div>
+                    <div class="chart-container">
+                        <canvas id="distribuzioneVoti"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trend Andamento -->
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header">Trend Andamento</div>
+                    <div class="chart-container">
+                        <canvas id="trendAndamento"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fragilità vs Voti -->
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header">Fragilità vs Voti</div>
+                    <div class="chart-container">
+                        <canvas id="fragilitaVsVoti"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Medie per Materia -->
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header">Medie per Materia</div>
+                    <div class="chart-container">
+                        <canvas id="mediePerMateria"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Presenze -->
+            <div class="col-12">
+                <div class="chart-card">
+                    <div class="chart-header">Presenze e Assenze</div>
+                    <div class="chart-container">
+                        <canvas id="presenzeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Charts JS -->
+    <script src="{{ url_for('static', filename='js/dashboard_charts.js') }}"></script>
+    
+    <script>
+        // Inizializza grafici al caricamento pagina
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎨 Inizializzazione dashboard interattiva...');
+            loadDashboardData();
+            
+            // Auto-refresh ogni 30 secondi
+            autoRefreshCharts(30000);
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>
+
