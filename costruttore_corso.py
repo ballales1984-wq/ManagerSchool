@@ -463,13 +463,22 @@ class CostruttoreCorsoDocente:
             tipo = r.tipo.value
             risorse_per_tipo[tipo] = risorse_per_tipo.get(tipo, 0) + 1
         
+        # Calcola materiale condiviso (risorse con più di 1 risultato per argomento)
+        materiale_condiviso_count = 0
+        for r in risorse:
+            for arg in r.argomenti:
+                risorse_stesso_argomento = self.risorse_per_argomento(arg)
+                if len(risorse_stesso_argomento) > 1:
+                    materiale_condiviso_count += 1
+                    break
+        
         return {
             "docente": docente,
             "totale_risorse": len(risorse),
             "totale_corsi": len(corsi),
             "risorse_per_tipo": risorse_per_tipo,
             "schede_generate": len([s for s in self.schede if s.argomento in [arg for c in corsi for m in c.moduli for arg in m.argomenti_principali]]),
-            "materiale_condiviso": len([r for r in risorse if len(self.risorse_per_argomento(arg)) > 1 for arg in r.argomenti]),
+            "materiale_condiviso": materiale_condiviso_count,
             "media_visualizzazioni": sum(r.numero_visualizzazioni for r in risorse) / len(risorse) if risorse else 0
         }
 
