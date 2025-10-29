@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-10-29T03:05:43.791242",
+  "totale_record": 2,
+  "dati_anonimi": [
+    {
+      "pseudonimo": "d568993f22c4c843",
+      "classe": "2A",
+      "eta": "14-16",
+      "reddito_categoria": "MEDIO",
+      "salute": "BUONA",
+      "situazione_familiare": "Tradizionale",
+      "media_voti": 7.38,
+      "fragilita_range": "Media"
+    },
+    {
+      "pseudonimo": "204d3f8b937d008d",
+      "classe": "3B",
+      "eta": "17-19",
+      "reddito_categoria": "ALTO",
+      "salute": "BUONA",
+      "situazione_familiare": "Tradizionale",
+      "media_voti": 8.62,
+      "fragilita_range": "Bassa"
+    }
+  ],
+  "GDPR_compliant": true,
+  "note": "Dati anonimizzati per conformità GDPR Art. 89"
+}
