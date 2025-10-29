@@ -14,6 +14,7 @@ from insegnanti import GestioneInsegnanti
 from voti import GestioneVoti
 from orari import GestioneOrari
 from analisi import AnalisiDidattica
+from ai.predictive_engine import PredictiveEngine, predictive_engine
 from accesso import GestoreAccessi, Ruolo
 from indicatori import CalcolatoreIndicatori
 from report import GeneratoreReport
@@ -1070,6 +1071,75 @@ class InterfacciaERP:
                 cursor.execute("SELECT * FROM voti ORDER BY data DESC LIMIT 100")
                 voti = [dict(row) for row in cursor.fetchall()]
             return jsonify(voti)
+        
+        # ============ API AI PREDITTIVA ============
+        
+        @self.app.route('/api/ai/predict-studente')
+        @self.richiede_accesso
+        def api_predict_studente():
+            """API: Predizione per studente."""
+            from ai.predictive_engine import predictive_engine
+            
+            studente_id = request.args.get('studente_id', type=int)
+            if not studente_id:
+                return jsonify({"errore": "studente_id mancante"}), 400
+            
+            # Recupera dati studente
+            studente = next((s for s in self.anagrafica.studenti if s.id == studente_id), None)
+            if not studente:
+                return jsonify({"errore": "Studente non trovato"}), 404
+            
+            # Recupera voti
+            voti_oggetti = self.voti.voti_studente(studente_id)
+            voti = [v.voto for v in voti_oggetti]
+            
+            # Crea dati studente
+            studente_data = {
+                'fragilita': getattr(studente, 'fragilita', 50),
+                'assenze_rate': 0.1,  # Da implementare
+                'interventi_count': 0  # Da implementare
+            }
+            
+            # Predizione
+            predizione = predictive_engine.predict_complete(studente_data, voti)
+            
+            return jsonify({
+                'studente_id': studente_id,
+                'rischio_insufficienza': predizione.rischio_insufficienza,
+                'probabilita_miglioramento': predizione.probabilita_miglioramento,
+                'previsione_voto_finale': predizione.previsione_voto_finale,
+                'raccomandazioni': predizione.raccomandazioni,
+                'livello_fiducia': predizione.livello_fiducia
+            })
+        
+        @self.app.route('/api/ai/early-warning')
+        @self.richiede_accesso
+        def api_early_warning():
+            """API: Sistema early warning."""
+            from ai.predictive_engine import predictive_engine
+            
+            # Prepara dati classi
+            classi_dict = {}
+            for studente in self.anagrafica.studenti:
+                classe = studente.classe
+                if classe not in classi_dict:
+                    classi_dict[classe] = {'classe': classe, 'studenti': []}
+                
+                voti = [v.voto for v in self.voti.voti_studente(studente.id)]
+                studente_data = {
+                    'nome_completo': studente.nome_completo,
+                    'fragilita': getattr(studente, 'fragilita', 50),
+                    'voti': voti
+                }
+                classi_dict[classe]['studenti'].append(studente_data)
+            
+            # Predizione early warning
+            warning_list = predictive_engine.early_warning_system(list(classi_dict.values()))
+            
+            return jsonify({
+                'totale_warning': len(warning_list),
+                'warning_list': warning_list[:20]  # Max 20
+            })
         
         # ============ API STATISTICHE DASHBOARD ============
         
