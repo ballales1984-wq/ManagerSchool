@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  managerschool:
+    build: .
+    container_name: managerschool_app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backup:/app/backup
+      - ./managerschool.db:/app/managerschool.db
+      - ./pdf_export:/app/pdf_export
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
