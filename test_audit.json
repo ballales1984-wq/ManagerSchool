@@ -1,0 +1,50 @@
+{
+  "generated_at": "2025-10-29T03:17:06.924424",
+  "total_changes": 2,
+  "changes": [
+    {
+      "version": 1,
+      "timestamp": "2025-10-29T03:17:06.922430",
+      "entity_type": "studente",
+      "entity_id": 1,
+      "action": "update",
+      "user": "docente1",
+      "old_value": {
+        "nome": "Mario",
+        "classe": "2A"
+      },
+      "new_value": {
+        "nome": "Mario",
+        "classe": "3A"
+      },
+      "changes": {
+        "classe": {
+          "from": "2A",
+          "to": "3A"
+        }
+      }
+    },
+    {
+      "version": 2,
+      "timestamp": "2025-10-29T03:17:06.923053",
+      "entity_type": "voto",
+      "entity_id": 1,
+      "action": "update",
+      "user": "docente1",
+      "old_value": {
+        "voto": 7.0,
+        "materia": "Matematica"
+      },
+      "new_value": {
+        "voto": 8.0,
+        "materia": "Matematica"
+      },
+      "changes": {
+        "voto": {
+          "from": 7.0,
+          "to": 8.0
+        }
+      }
+    }
+  ]
+}
