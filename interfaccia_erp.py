@@ -27,6 +27,8 @@ from amministrativa_school import AmministrativaSchool
 from backup_registro import GestoreBackup
 from valutazione_impatto import ValutazioneImpattoEducativo
 from costruttore_corso import CostruttoreCorsoDocente
+from database_manager import DatabaseManager
+from database_integration import DatabaseIntegration
 
 
 class InterfacciaERP:
@@ -103,6 +105,10 @@ class InterfacciaERP:
         self.costruttore_corso = CostruttoreCorsoDocente(
             self.anagrafica, self.voti
         )
+        
+        # Database SQLite per persistenza
+        self.database = DatabaseManager("managerschool.db")
+        self.db_integration = DatabaseIntegration(self.anagrafica, self.voti)
         
         # Crea utenti demo
         self._crea_utenti_demo()
@@ -1023,6 +1029,47 @@ class InterfacciaERP:
                 return jsonify({"errore": "Parametro mancante"}), 400
             schede = self.costruttore_corso.schede_studente(studente_id)
             return jsonify([s.to_dict() for s in schede])
+        
+        # ============ API DATABASE ============
+        
+        @self.app.route('/api/database/stats')
+        @self.richiede_accesso
+        def api_database_stats():
+            """API: Statistiche database."""
+            stats = self.database.statistiche_database()
+            return jsonify(stats)
+        
+        @self.app.route('/api/database/backup', methods=['POST'])
+        @self.richiede_permesso("gestione_studenti")
+        def api_database_backup():
+            """API: Crea backup database."""
+            backup_path = self.database.backup_database()
+            return jsonify({"successo": True, "filepath": backup_path})
+        
+        @self.app.route('/api/database/sync', methods=['POST'])
+        @self.richiede_permesso("gestione_studenti")
+        def api_database_sync():
+            """API: Sincronizza dati con database."""
+            try:
+                self.db_integration.sincronizza_dati_esistenti()
+                return jsonify({"successo": True, "messaggio": "Sincronizzazione completata"})
+            except Exception as e:
+                return jsonify({"errore": str(e)}), 500
+        
+        @self.app.route('/api/database/voti')
+        @self.richiede_accesso
+        def api_database_voti():
+            """API: Lista voti dal database."""
+            studente_id = request.args.get('studente_id', type=int)
+            if studente_id:
+                voti = self.database.ottieni_voti_studente(studente_id)
+            else:
+                # Tutti i voti
+                from database_manager import DatabaseManager
+                cursor = self.database.conn.cursor()
+                cursor.execute("SELECT * FROM voti ORDER BY data DESC LIMIT 100")
+                voti = [dict(row) for row in cursor.fetchall()]
+            return jsonify(voti)
         
         # ============ API STATISTICHE DASHBOARD ============
         
