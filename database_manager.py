@@ -28,9 +28,9 @@ class DatabaseManager:
         try:
             self.conn = sqlite3.connect(self.db_path, check_same_thread=False)
             self.conn.row_factory = sqlite3.Row  # Accesso come dizionario
-            print(f"✅ Connesso al database: {self.db_path}")
+            print(f"[OK] Connesso al database: {self.db_path}")
         except Exception as e:
-            print(f"❌ Errore connessione database: {e}")
+            print(f"[ERRORE] Errore connessione database: {e}")
     
     def close(self):
         """Chiude la connessione."""
@@ -182,7 +182,7 @@ class DatabaseManager:
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_presenze_data ON presenze(data)")
         
         self.conn.commit()
-        print("✅ Database inizializzato con successo")
+        print(" Database inizializzato con successo")
     
     # ============ OPERAZIONI STUDENTI ============
     
@@ -357,7 +357,7 @@ class DatabaseManager:
             except Exception as e:
                 print(f"⚠️ Errore migrazione voto: {e}")
         
-        print("✅ Migrazione completata")
+        print(" Migrazione completata")
     
     def backup_database(self, backup_path: str = None) -> str:
         """Crea backup del database.
@@ -375,7 +375,7 @@ class DatabaseManager:
         self.conn.backup(backup_conn)
         backup_conn.close()
         
-        print(f"✅ Backup database creato: {backup_path}")
+        print(f" Backup database creato: {backup_path}")
         return backup_path
     
     def statistiche_database(self) -> Dict:
@@ -438,12 +438,12 @@ if __name__ == "__main__":
     
     # Test statistiche
     stats = db.statistiche_database()
-    print(f"\n📊 Statistiche database:")
+    print(f"\n Statistiche database:")
     print(f"   Studenti: {stats['studenti']}")
     print(f"   Voti: {stats['voti']}")
     print(f"   Presenze: {stats['presenze']}")
     print(f"   Classi: {stats['classi']}")
     
     db.close()
-    print("\n✅ Test completato!")
+    print("\n Test completato!")
 
