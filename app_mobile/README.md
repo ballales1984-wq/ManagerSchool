@@ -1,6 +1,6 @@
 # 📱 ManagerSchool Mobile App
 
-App mobile per ManagerSchool - Interfaccia futura per studenti, genitori e docenti.
+App mobile React Native + Expo per ManagerSchool - Completamente implementata e pronta all'uso!
 
 ## 🎯 Funzionalità
 
